@@ -1,9 +1,9 @@
-### Ý TƯỞNG DỰ ÁN KHOÁ HỌC: MOBILE APP BÁN VÉ XEM PHIM
+### MOBILE APP BÁN VÉ XEM PHIM
 
 ---
 
 #### **1. Tên đề dự án**  
-**CinemaTicket** – Ứng dụng di động bán vé xem phim thông minh.
+**CinemaTicket** – Ứng dụng di động bán vé xem phim.
 
 ---
 
@@ -29,9 +29,6 @@ Ngày nay, nhu cầu xem phim tại rạp ngày càng phổ biến, nhưng nhi�
 
 #### **4. Tính mới, tính sáng tạo**  
 - **Thiết kế giao diện độc đáo**, mang phong cách điện ảnh với hiệu ứng hình ảnh sống động.  
-- Hỗ trợ tính năng **chia sẻ vé** qua mạng xã hội hoặc email.  
-- Cung cấp thông tin chi tiết và **đánh giá phim** từ các nền tảng uy tín.  
-- **Hệ thống điểm thưởng**: Người dùng tích điểm từ các giao dịch để đổi vé miễn phí hoặc quà tặng. 
 
 ---
 
