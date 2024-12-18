@@ -1,66 +1,46 @@
-### README: Ứng dụng Đặt Vé Xem Phim bằng Dart (Android)
+### Ý TƯỞNG DỰ ÁN KHOÁ HỌC: MOBILE APP BÁN VÉ XEM PHIM
 
 ---
 
-## **Mô tả dự án**  
-Dự án **Ứng dụng Đặt Vé Xem Phim** được phát triển bằng ngôn ngữ Dart nhằm cung cấp một nền tảng đơn giản, tiện lợi để người dùng đặt vé xem phim trực tuyến. Ứng dụng hỗ trợ các tính năng chính như:  
-
-- Xem lịch chiếu phim theo rạp và thời gian.  
-- Đặt vé với ghế ngồi tùy chọn trong rạp.  
-- Thanh toán trực tuyến qua nhiều phương thức.  
-- Quản lý thông tin người dùng và lịch sử đặt vé.  
-
-Ứng dụng được thiết kế dành riêng cho hệ điều hành Android, tập trung vào hiệu năng và giao diện người dùng thân thiện.  
+#### **1. Tên đề dự án**  
+**CinemaTicket** – Ứng dụng di động bán vé xem phim thông minh.
 
 ---
 
-## **Tại sao chọn Dart?**  
+#### **2. Motivation – WHY**  
+Ngày nay, nhu cầu xem phim tại rạp ngày càng phổ biến, nhưng nhiều người gặp khó khăn trong việc đặt vé:  
+- Mất thời gian xếp hàng tại rạp.  
+- Hệ thống đặt vé online hiện tại đôi khi không trực quan hoặc khó sử dụng.  
+- Thiếu thông tin đầy đủ về phim và các khuyến mãi hấp dẫn.  
 
-1. **Tích hợp với Flutter**:  
-   Dart là ngôn ngữ được thiết kế để hoạt động tốt với Flutter, giúp tạo ra giao diện đẹp và hiện đại. Điều này đảm bảo ứng dụng Android có trải nghiệm người dùng nhất quán và chất lượng cao.  
-
-2. **Hiệu năng vượt trội**:  
-   Dart được biên dịch trực tiếp thành mã máy, mang lại hiệu năng cao, đảm bảo các thao tác như đặt vé hoặc thanh toán diễn ra nhanh chóng và mượt mà.  
-
-3. **Hỗ trợ phát triển nhanh**:  
-   Dart có cú pháp đơn giản, dễ học và tài liệu phong phú, giúp tiết kiệm thời gian phát triển mà vẫn đảm bảo chất lượng.  
+**CinemaTicket** ra đời nhằm mang đến một trải nghiệm mượt mà, tiện lợi và nhanh chóng, giúp người dùng dễ dàng đặt vé mọi lúc, mọi nơi.
 
 ---
 
-## **Mục tiêu của dự án**  
-
-1. **Đáp ứng nhu cầu thực tế**:  
-   - Cung cấp giải pháp đặt vé tiện lợi, nhanh chóng cho người dùng Android.  
-   - Hạn chế việc phải xếp hàng mua vé trực tiếp tại rạp và tránh tình trạng hết chỗ.  
-
-2. **Tối ưu hóa trải nghiệm người dùng**:  
-   - Thiết kế giao diện trực quan, dễ sử dụng trên mọi kích thước màn hình Android.  
-   - Tích hợp các phương thức thanh toán phổ biến, như thẻ tín dụng, ví điện tử.  
-
-3. **Mở rộng khả năng ứng dụng**:  
-   - Cho phép người dùng quản lý lịch sử đặt vé và thông tin cá nhân.  
-   - Cung cấp thông tin chi tiết về rạp chiếu và các bộ phim đang chiếu.  
+#### **3. Mục tiêu**  
+- **Xây dựng ứng dụng di động thân thiện và trực quan** với công nghệ **Flutter**
+- Cho phép người dùng:  
+  - Xem lịch chiếu phim theo rạp, ngày giờ.  
+  - Đặt vé xem phim dễ dàng với nhiều hình thức thanh toán.  
+  - Theo dõi các ưu đãi và chương trình khuyến mãi.  
+  - Lưu trữ vé điện tử và quản lý lịch sử đặt vé.  
 
 ---
 
-## **Tính mới và sáng tạo**  
-
-1. **Đặt vé theo thời gian thực**:  
-   - Dữ liệu vé được cập nhật ngay khi người dùng chọn ghế, đảm bảo tính chính xác và đồng bộ.  
-
-2. **Giao diện hiện đại và thân thiện**:  
-   - Sử dụng Flutter để tạo ra giao diện đẹp, mượt mà, và dễ dàng tương tác trên các thiết bị Android.  
-
-3. **Tích hợp thanh toán tiện lợi**:  
-   - Hỗ trợ nhiều hình thức thanh toán trực tuyến để người dùng dễ dàng hoàn tất giao dịch.  
-
-4. **Hệ thống quản lý vé thông minh**:  
-   - Người dùng có thể xem lại lịch sử đặt vé và kiểm tra thông tin ghế ngồi đã đặt.  
+#### **4. Tính mới, tính sáng tạo**  
+- **Thiết kế giao diện độc đáo**, mang phong cách điện ảnh với hiệu ứng hình ảnh sống động.  
+- Hỗ trợ tính năng **chia sẻ vé** qua mạng xã hội hoặc email.  
+- Cung cấp thông tin chi tiết và **đánh giá phim** từ các nền tảng uy tín.  
+- **Hệ thống điểm thưởng**: Người dùng tích điểm từ các giao dịch để đổi vé miễn phí hoặc quà tặng. 
 
 ---
 
-## **Kết luận**  
+#### **5. Team members**  
+1. **Phạm Trung Hiếu** 
+2. **Nguyễn Văn Nam** 
+3. **Đặng Vũ**
 
-Ứng dụng Đặt Vé Xem Phim trên Android được phát triển bằng Dart và Flutter mang đến giải pháp đặt vé nhanh chóng, tiện lợi, và thân thiện với người dùng. Với tính năng đa dạng và giao diện hiện đại, dự án này hứa hẹn sẽ đáp ứng nhu cầu của người yêu thích điện ảnh một cách hiệu quả và tối ưu.  
+--- 
 
-Hãy cùng chúng tôi trải nghiệm sự tiện ích và thú vị từ ứng dụng này! 🎬  
+#### **Tổng kết**  
+**CinemaTicket** không chỉ là một ứng dụng đặt vé mà còn là một trợ thủ đắc lực, giúp người dùng tận hưởng trọn vẹn niềm vui điện ảnh theo cách tiện lợi và thông minh nhất.
