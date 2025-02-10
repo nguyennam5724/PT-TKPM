@@ -1,8 +1,8 @@
-name: movie_app
+name: moviego
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -31,19 +31,27 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  http: ^1.2.2
-  carousel_slider: ^5.0.0
-  card_swiper: ^3.0.1
-  cached_network_image: ^3.4.1
-  intl: ^0.20.1
+  flutter_svg: ^2.0.16
+  getwidget: ^4.0.0
+  firebase_core: ^3.10.0
+  firebase_auth: ^5.4.0
+  cloud_firestore: ^5.6.1
   flutter_feather_icons: ^2.0.0+1
-  material_design_icons_flutter: ^7.0.7296
   font_awesome_flutter: ^10.8.0
-
+  intl: ^0.20.2
+  carousel_slider: ^5.0.0
+  # google_sign_in: ^6.2.
+  # http: ^1.2.2
+  # carousel_slider: ^5.0.0
+  # card_swiper: ^3.0.1
+  # cached_network_image: ^3.4.1
+  # intl: ^0.20.1
+  # flutter_feather_icons: ^2.0.0+1
+  # material_design_icons_flutter: ^7.0.7296
+  # font_awesome_flutter: ^10.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,7 +68,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -69,6 +76,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -82,11 +90,32 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: Fontstyle
+      fonts:
+        - asset: fonts/Candy Beans.otf
+          weight: 700
+        - asset: fonts/iCiel Crocante.otf
+          weight: 600
+        - asset: fonts/UTM Hanzel.ttf
+          weight: 500
+    - family: Kanit
+      fonts:
+        - asset: fonts/Kanit-SemiBold.ttf
+    - family: Open_Sans_1
+      fonts:
+        - asset: fonts/OpenSans-Regular.ttf
+    - family: Open_Sans_2
+      fonts:
+        - asset: fonts/OpenSans_SemiCondensed-Bold.ttf
     - family: Ultra
       fonts:
         - asset: fonts/Ultra-Regular.ttf
-         
-    
-  
+
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

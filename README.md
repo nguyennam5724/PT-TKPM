@@ -1,43 +1,16 @@
-### MOBILE APP BÁN VÉ XEM PHIM
+# moviego
 
----
+A new Flutter project.
 
-#### **1. Tên đề dự án**  
-**CinemaTicket** – Ứng dụng di động bán vé xem phim.
+## Getting Started
 
----
+This project is a starting point for a Flutter application.
 
-#### **2. Motivation – WHY**  
-Ngày nay, nhu cầu xem phim tại rạp ngày càng phổ biến, nhưng nhiều người gặp khó khăn trong việc đặt vé:  
-- Mất thời gian xếp hàng tại rạp.  
-- Hệ thống đặt vé online hiện tại đôi khi không trực quan hoặc khó sử dụng.  
-- Thiếu thông tin đầy đủ về phim và các khuyến mãi hấp dẫn.  
+A few resources to get you started if this is your first Flutter project:
 
-**CinemaTicket** ra đời nhằm mang đến một trải nghiệm mượt mà, tiện lợi và nhanh chóng, giúp người dùng dễ dàng đặt vé mọi lúc, mọi nơi.
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
----
-
-#### **3. Mục tiêu**  
-- **Xây dựng ứng dụng di động thân thiện và trực quan** với công nghệ **Flutter**
-- Cho phép người dùng:  
-  - Xem lịch chiếu phim theo rạp, ngày giờ.  
-  - Đặt vé xem phim dễ dàng với nhiều hình thức thanh toán.  
-  - Theo dõi các ưu đãi và chương trình khuyến mãi.  
-  - Lưu trữ vé điện tử và quản lý lịch sử đặt vé.  
-
----
-
-#### **4. Tính mới, tính sáng tạo**  
-- **Thiết kế giao diện độc đáo**, mang phong cách điện ảnh với hiệu ứng hình ảnh sống động.  
-
----
-
-#### **5. Team members**  
-1. **Phạm Trung Hiếu** 
-2. **Nguyễn Văn Nam** 
-3. **Đặng Vũ**
-
---- 
-
-#### **Tổng kết**  
-**CinemaTicket** không chỉ là một ứng dụng đặt vé mà còn là một trợ thủ đắc lực, giúp người dùng tận hưởng trọn vẹn niềm vui điện ảnh theo cách tiện lợi và thông minh nhất.
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

@@ -5,10 +5,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_app/Model/movie.dart';
-import 'package:movie_app/Services/services.dart';
+import 'package:moviego/Model/movie.dart';
+import 'package:moviego/Services/services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:movie_app/widgets/bottom_app_bar.dart';
+import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,14 +47,14 @@ class _HomePageState extends State<HomePage> {
       "image": "assets/images/toy_story_4_-publicity_still_13-h_2019.png",
       "title": "Tim Allen Teases a “Very, Very Clever” ‘Toy Story 5’ Script"
     },
-    
     {
       "image": "assets/images/batman.png",
       "title":
           "‘The Batman’ Sequel Moves to 2027 as Alejandro González Iñárritu and Tom Cruise Take Its Fall 2026 Date"
     },
     {
-      "image":"assets/images/Dune-2-The-Substance-Wild-Robot-Split-Everett-H-2025.png",
+      "image":
+          "assets/images/Dune-2-The-Substance-Wild-Robot-Split-Everett-H-2025.png",
       "title": "Heat Vision’s Top 10 Movies of 2024"
     },
     {
@@ -96,43 +96,44 @@ class _HomePageState extends State<HomePage> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(movieNews.length, (index) {
-                final movie = movieNews[index];
-                return GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("${movie['title']} tapped!")),
-                    );
-                  },
-                  child: Container(
-                    width: 200,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                    ),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            movie['image']!,
-                            height: 150, // Đặt chiều cao cố định
-                            width: double.infinity, // Đặt chiều rộng vừa khung
-                            fit: BoxFit.cover,
-                          ),
+                    final movie = movieNews[index];
+                    return GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${movie['title']} tapped!")),
+                        );
+                      },
+                      child: Container(
+                        width: 200,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 8,
                         ),
-                        const SizedBox(height: 5),
-                        Text(
-                          movie['title']!,
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.white),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              })),
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                movie['image']!,
+                                height: 150, // Đặt chiều cao cố định
+                                width:
+                                    double.infinity, // Đặt chiều rộng vừa khung
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              movie['title']!,
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  })),
             )
           ],
         ),

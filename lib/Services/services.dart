@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'package:movie_app/Model/movie.dart';
+import 'package:moviego/Model/movie.dart';
 
 const baseUrl = 'https://api.themoviedb.org/3/';
 const apiKey = '27b1bcddbbc2b60c4ac18f9a69a36ecb';
@@ -28,9 +28,13 @@ class APIserver {
       List<List<String>> genresList = await _getGenresByIds(genreIdsList);
 
       // Trả về danh sách các Movie đã được thêm tên thể loại
-      return data.asMap().map((index, movieData) {
-        return MapEntry(index, Movie.fromMap(movieData, genresList[index]));
-      }).values.toList();
+      return data
+          .asMap()
+          .map((index, movieData) {
+            return MapEntry(index, Movie.fromMap(movieData, genresList[index]));
+          })
+          .values
+          .toList();
     }
     throw Exception('Failed to load now showing movies');
   }
@@ -54,9 +58,13 @@ class APIserver {
       List<List<String>> genresList = await _getGenresByIds(genreIdsList);
 
       // Trả về danh sách các Movie đã được thêm tên thể loại
-      return data.asMap().map((index, movieData) {
-        return MapEntry(index, Movie.fromMap(movieData, genresList[index]));
-      }).values.toList();
+      return data
+          .asMap()
+          .map((index, movieData) {
+            return MapEntry(index, Movie.fromMap(movieData, genresList[index]));
+          })
+          .values
+          .toList();
     }
     throw Exception('Failed to load coming soon movies');
   }
@@ -83,53 +91,53 @@ class APIserver {
   }
 
   // Lấy tên thể loại từ ID
-  Future<List<List<String>>> _getGenresByIds(List<List<int>> genreIdsList) async {
-  const genreEndpoint = 'genre/movie/list';
-  final url = '$baseUrl$genreEndpoint$key';
+  Future<List<List<String>>> _getGenresByIds(
+      List<List<int>> genreIdsList) async {
+    const genreEndpoint = 'genre/movie/list';
+    final url = '$baseUrl$genreEndpoint$key';
 
-  final response = await http.get(Uri.parse(url));
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    
-    // Danh sách các thể loại với ID và tên
-    List<Map<String, dynamic>> allGenres = List<Map<String, dynamic>>.from(data['genres']);
-    
-    // Tạo một map để ánh xạ từ ID thể loại sang tên thể loại
-    Map<int, String> genreMap = {};
-    for (var genre in allGenres) {
-      genreMap[genre['id']] = genre['name'];
-    }
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
 
-    // In toàn bộ danh sách thể loại để kiểm tra
-    log('All Genres: $genreMap');
+      // Danh sách các thể loại với ID và tên
+      List<Map<String, dynamic>> allGenres =
+          List<Map<String, dynamic>>.from(data['genres']);
 
-    // Lấy tên thể loại cho mỗi bộ phim từ các ID
-    List<List<String>> genresList = [];
-    for (var genreIds in genreIdsList) {
-      List<String> genres = [];
-      for (int genreId in genreIds) {
-        // Kiểm tra nếu genreId có trong genreMap và lấy tên thể loại
-        if (genreMap.containsKey(genreId)) {
-          genres.add(genreMap[genreId]!);
-        } else {
-          // Nếu không có thể loại hợp lệ, thêm "Unknown"
-          genres.add('Unknown');
+      // Tạo một map để ánh xạ từ ID thể loại sang tên thể loại
+      Map<int, String> genreMap = {};
+      for (var genre in allGenres) {
+        genreMap[genre['id']] = genre['name'];
+      }
+
+      // In toàn bộ danh sách thể loại để kiểm tra
+      log('All Genres: $genreMap');
+
+      // Lấy tên thể loại cho mỗi bộ phim từ các ID
+      List<List<String>> genresList = [];
+      for (var genreIds in genreIdsList) {
+        List<String> genres = [];
+        for (int genreId in genreIds) {
+          // Kiểm tra nếu genreId có trong genreMap và lấy tên thể loại
+          if (genreMap.containsKey(genreId)) {
+            genres.add(genreMap[genreId]!);
+          } else {
+            // Nếu không có thể loại hợp lệ, thêm "Unknown"
+            genres.add('Unknown');
+          }
         }
+        // Nếu danh sách thể loại rỗng, có thể thay bằng "No Genre"
+        if (genres.isEmpty) {
+          genres.add('No Genre');
+        }
+        genresList.add(genres);
       }
-      // Nếu danh sách thể loại rỗng, có thể thay bằng "No Genre"
-      if (genres.isEmpty) {
-        genres.add('No Genre');
-      }
-      genresList.add(genres);
+
+      // In danh sách thể loại cho từng bộ phim
+      log('Genres List by IDs: $genresList');
+
+      return genresList;
     }
-
-    // In danh sách thể loại cho từng bộ phim
-    log('Genres List by IDs: $genresList');
-
-    return genresList;
+    throw Exception('Failed to load genres');
   }
-  throw Exception('Failed to load genres');
-}
-
-
 }

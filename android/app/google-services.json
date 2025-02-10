@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "477835720064",
+    "project_id": "moviego-b4ec6",
+    "storage_bucket": "moviego-b4ec6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477835720064:android:730d041e23cdb6d1743d65",
+        "android_client_info": {
+          "package_name": "com.example.moviego"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6KjVN7Qk5Zc7nn_XQCKgOmC-tnnndpnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
