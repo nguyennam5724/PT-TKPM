@@ -3,6 +3,7 @@ import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/pages/sign_in_password.dart';
 import 'package:moviego/pages/snack_bar.dart';
 import 'package:moviego/screens/homepage.dart';
+import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -41,7 +42,7 @@ class _RegisterState extends State<Register> {
         isLoading = true;
       });
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => const MainScreen(),
       ));
     } else {
       setState(() {

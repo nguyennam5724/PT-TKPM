@@ -4,6 +4,7 @@ import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/pages/register.dart';
 import 'package:moviego/pages/snack_bar.dart';
 import 'package:moviego/screens/homepage.dart';
+import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class SignInPass extends StatefulWidget {
   const SignInPass({super.key});
@@ -42,7 +43,7 @@ class _SignInPassState extends State<SignInPass> {
         isLoading = true;
       });
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomePage(),
+        builder: (context) => const MainScreen(),
       ));
     } else {
       setState(() {

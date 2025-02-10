@@ -1,117 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:moviego/screens/homepage.dart';
+import 'package:moviego/screens/movie.dart';
+import 'package:moviego/screens/profile.dart';
+import 'package:moviego/screens/ticket.dart';
 
-class CustomBottomAppBar extends StatefulWidget {
-  const CustomBottomAppBar({super.key});
+
+class MainScreen extends StatefulWidget {
+  final int initialIndex;
+
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
-  State<CustomBottomAppBar> createState() => _CustomBottomAppBarState();
+  State<MainScreen> createState() => MainScreenState();
 }
 
-class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
-  Map<String, bool> isTapped = {
-    'home': false,
-    'theaters': false,
-    'movies': false,
-    'profile': false,
-  };
+class MainScreenState extends State<MainScreen> {
+  late int _currentIndex;
+  late final List<Widget> _pages;
 
-  void onTap(String key) {
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pages = [
+      HomePage(onTabChange: _onTabChange),
+      const TicketPage(),
+      MoviePage(selectedCategory: 'Now Playing'),
+      const ProfilePage(),
+    ];
+  }
+
+  void _onTabChange(int index) {
     setState(() {
-      isTapped[key] = !isTapped[key]!;
+      _currentIndex = index;
+    });
+  }
+
+  void navigateToMovies(String category) {
+    setState(() {
+      _currentIndex = 2; 
     });
 
-    Future.delayed(const Duration(milliseconds: 100), (){
-      setState(() {
-        isTapped[key] = false;
-    });
-   });
+    // Thay đổi danh mục trong MoviePage
+    final moviePage = _pages[2] as MoviePage;
+    moviePage.changeCategory(category);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      color: const Color(0xFF1E1E1E),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              // Hành động khi nhấn vào "Home"
-              onTap('home');
-              print('Home');
-            },
-            child: Column(
-              
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.home, color: isTapped['home']! ? Colors.yellow : Colors.white),
-                const Text(
-                  "Home",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.only(top: 2),
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: Color(0xFF262626), width: 1.5)),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.black,
+          currentIndex: _currentIndex,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.yellow,
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          GestureDetector(
-            onTap: () {
-              // Hành động khi nhấn vào "Theaters"
-            },
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.theaters, color: Colors.white),
-                Text(
-                  "Theaters",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              // Hành động khi nhấn vào "Video"
-            },
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(FeatherIcons.video, color: Colors.white),
-                Text(
-                  "Video",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.theaters),
+              label: 'Ticket',
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              // Hành động khi nhấn vào "Profile"
-            },
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(FeatherIcons.user, color: Colors.white),
-                Text(
-                  "Profile",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.video_library),
+              label: 'Movies',
             ),
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

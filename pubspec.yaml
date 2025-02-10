@@ -52,6 +52,17 @@ dependencies:
   # flutter_feather_icons: ^2.0.0+1
   # material_design_icons_flutter: ^7.0.7296
   # font_awesome_flutter: ^10.8.0
+
+  http: ^1.2.2
+  card_swiper: ^3.0.1
+  cached_network_image: ^3.4.1
+  material_design_icons_flutter: ^7.0.7296
+  shared_preferences: ^2.3.5
+  readmore: ^3.0.0
+  expandable_text: ^2.3.0
+  webview_flutter: ^4.10.0
+  youtube_player_flutter: ^9.1.1
+  url_launcher: ^6.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
