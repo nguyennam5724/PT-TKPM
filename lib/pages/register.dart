@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/pages/sign_in_password.dart';
 import 'package:moviego/pages/snack_bar.dart';
-import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class Register extends StatefulWidget {
@@ -286,7 +285,7 @@ class _RegisterState extends State<Register> {
                   ),
                   TextSpan(
                     text:
-                        "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
+                    "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.5),
                       fontSize: 12,
@@ -308,19 +307,19 @@ class _RegisterState extends State<Register> {
                 onTapDown: (_) {
                   setState(() {
                     _facebookButtonColor =
-                        const Color.fromARGB(111, 174, 146, 146);
+                    const Color.fromARGB(111, 174, 146, 146);
                   });
                 },
                 onTapUp: (_) {
                   setState(() {
                     _facebookButtonColor =
-                        const Color.fromARGB(197, 55, 38, 38);
+                    const Color.fromARGB(197, 55, 38, 38);
                   });
                 },
                 onTapCancel: () {
                   setState(() {
                     _facebookButtonColor =
-                        const Color.fromARGB(197, 55, 38, 38);
+                    const Color.fromARGB(197, 55, 38, 38);
                   });
                 },
                 child: Container(
@@ -345,7 +344,7 @@ class _RegisterState extends State<Register> {
                 onTapDown: (_) {
                   setState(() {
                     _googleButtonColor =
-                        const Color.fromARGB(111, 174, 146, 146);
+                    const Color.fromARGB(111, 174, 146, 146);
                   });
                 },
                 onTapUp: (_) {
@@ -380,7 +379,7 @@ class _RegisterState extends State<Register> {
                 onTapDown: (_) {
                   setState(() {
                     _appleButtonColor =
-                        const Color.fromARGB(111, 174, 146, 146);
+                    const Color.fromARGB(111, 174, 146, 146);
                   });
                 },
                 onTapUp: (_) {

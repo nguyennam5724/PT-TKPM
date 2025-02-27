@@ -33,7 +33,7 @@ class APIserver {
       List<List<String>> languagesList = data.map((movieData) {
         return movieData['spoken_languages'] != null
             ? List<String>.from(movieData['spoken_languages']
-                .map((lang) => lang['english_name'] ?? 'Unknown'))
+            .map((lang) => lang['english_name'] ?? 'Unknown'))
             : <String>[];
       }).toList();
 
@@ -41,11 +41,11 @@ class APIserver {
       return data
           .asMap()
           .map((index, movieData) {
-            return MapEntry(
-                index,
-                Movie.fromMap(
-                    movieData, genresList[index], languagesList[index]));
-          })
+        return MapEntry(
+            index,
+            Movie.fromMap(
+                movieData, genresList[index], languagesList[index]));
+      })
           .values
           .toList();
     }
@@ -74,7 +74,7 @@ class APIserver {
       List<List<String>> languagesList = data.map((movieData) {
         return movieData['spoken_languages'] != null
             ? List<String>.from(movieData['spoken_languages']
-                .map((lang) => lang['english_name'] ?? 'Unknown'))
+            .map((lang) => lang['english_name'] ?? 'Unknown'))
             : <String>[];
       }).toList();
 
@@ -82,11 +82,11 @@ class APIserver {
       return data
           .asMap()
           .map((index, movieData) {
-            return MapEntry(
-                index,
-                Movie.fromMap(
-                    movieData, genresList[index], languagesList[index]));
-          })
+        return MapEntry(
+            index,
+            Movie.fromMap(
+                movieData, genresList[index], languagesList[index]));
+      })
           .values
           .toList();
     }
@@ -129,21 +129,21 @@ class APIserver {
       final List<Map<String, String?>> actors = (data['cast'] as List)
           .where((castMember) => castMember['known_for_department'] == "Acting")
           .map((castMember) => {
-                "name": castMember['name'] as String,
-                "profile_path": castMember['profile_path'] != null
-                    ? 'https://image.tmdb.org/t/p/w500${castMember['profile_path']}'
-                    : null,
-              })
+        "name": castMember['name'] as String,
+        "profile_path": castMember['profile_path'] != null
+            ? 'https://image.tmdb.org/t/p/w500${castMember['profile_path']}'
+            : null,
+      })
           .toList();
 
       final List<Map<String, String?>> directors = (data['crew'] as List)
           .where((castMember) => castMember['job'] == "Director")
           .map((castMember) => {
-                "name": castMember['name'] as String,
-                "profile_path": castMember['profile_path'] != null
-                    ? 'https://image.tmdb.org/t/p/w500${castMember['profile_path']}'
-                    : null,
-              })
+        "name": castMember['name'] as String,
+        "profile_path": castMember['profile_path'] != null
+            ? 'https://image.tmdb.org/t/p/w500${castMember['profile_path']}'
+            : null,
+      })
           .toList();
 
       return {
@@ -239,7 +239,7 @@ class APIserver {
 
       // Danh sách các thể loại với ID và tên
       List<Map<String, dynamic>> allGenres =
-          List<Map<String, dynamic>>.from(data['genres']);
+      List<Map<String, dynamic>>.from(data['genres']);
 
       // Tạo một map để ánh xạ từ ID thể loại sang tên thể loại
       Map<int, String> genreMap = {};
@@ -286,38 +286,38 @@ class APIserver {
 
     String normalizedQuery = query.toLowerCase();
 
-  // Tách từ khóa
-  List<String> keywords = normalizedQuery.split(' ');
+    // Tách từ khóa
+    List<String> keywords = normalizedQuery.split(' ');
 
-  // Tìm kiếm các tiêu đề phim khớp với từ khóa
-  List<Movie> searchResults = allMovies.where((movie) {
-    String normalizedTitle = movie.title.toLowerCase();
-    return keywords.every((keyword) => normalizedTitle.contains(keyword));
-  }).toList();
+    // Tìm kiếm các tiêu đề phim khớp với từ khóa
+    List<Movie> searchResults = allMovies.where((movie) {
+      String normalizedTitle = movie.title.toLowerCase();
+      return keywords.every((keyword) => normalizedTitle.contains(keyword));
+    }).toList();
 
-  // Sắp xếp kết quả:
-  searchResults.sort((a, b) {
-    String normalizedA = a.title.toLowerCase();
-    String normalizedB = b.title.toLowerCase();
+    // Sắp xếp kết quả:
+    searchResults.sort((a, b) {
+      String normalizedA = a.title.toLowerCase();
+      String normalizedB = b.title.toLowerCase();
 
-    // Ưu tiên khớp chính xác
-    if (normalizedA == normalizedQuery && normalizedB != normalizedQuery) {
-      return -1;
-    } else if (normalizedA != normalizedQuery && normalizedB == normalizedQuery) {
-      return 1;
-    }
+      // Ưu tiên khớp chính xác
+      if (normalizedA == normalizedQuery && normalizedB != normalizedQuery) {
+        return -1;
+      } else if (normalizedA != normalizedQuery && normalizedB == normalizedQuery) {
+        return 1;
+      }
 
-    // Ưu tiên tiêu đề bắt đầu bằng từ khóa
-    if (normalizedA.startsWith(normalizedQuery) && !normalizedB.startsWith(normalizedQuery)) {
-      return -1;
-    } else if (!normalizedA.startsWith(normalizedQuery) && normalizedB.startsWith(normalizedQuery)) {
-      return 1;
-    }
+      // Ưu tiên tiêu đề bắt đầu bằng từ khóa
+      if (normalizedA.startsWith(normalizedQuery) && !normalizedB.startsWith(normalizedQuery)) {
+        return -1;
+      } else if (!normalizedA.startsWith(normalizedQuery) && normalizedB.startsWith(normalizedQuery)) {
+        return 1;
+      }
 
-    // Mặc định sắp xếp theo tên
-    return a.title.compareTo(b.title);
-  });
+      // Mặc định sắp xếp theo tên
+      return a.title.compareTo(b.title);
+    });
 
-  return searchResults;
+    return searchResults;
   }
 }

@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     {
       "image": "assets/images/Mufasa.png",
       "title":
-          "Box Office: ‘Mufasa’ Wins With ${23.8}M, ‘Sonic 3’ Sits at No. 2 as Franchise Crosses ${1}B Globally"
+      "Box Office: ‘Mufasa’ Wins With ${23.8}M, ‘Sonic 3’ Sits at No. 2 as Franchise Crosses ${1}B Globally"
     },
     {
       "image": "assets/images/toy_story_4_-publicity_still_13-h_2019.png",
@@ -53,18 +53,18 @@ class _HomePageState extends State<HomePage> {
     {
       "image": "assets/images/batman.png",
       "title":
-          "‘The Batman’ Sequel Moves to 2027 as Alejandro González Iñárritu and Tom Cruise Take Its Fall 2026 Date"
+      "‘The Batman’ Sequel Moves to 2027 as Alejandro González Iñárritu and Tom Cruise Take Its Fall 2026 Date"
     },
     {
       "image":
-          "assets/images/Dune-2-The-Substance-Wild-Robot-Split-Everett-H-2025.png",
+      "assets/images/Dune-2-The-Substance-Wild-Robot-Split-Everett-H-2025.png",
       "title": "Heat Vision’s Top 10 Movies of 2024"
     },
     {
       "image":
-          "assets/images/WIN_OR_LOSE-ONLINE-USE-g170_38a_pub.pub16n.448-2-H-2024.png",
+      "assets/images/WIN_OR_LOSE-ONLINE-USE-g170_38a_pub.pub16n.448-2-H-2024.png",
       "title":
-          "Ex-Pixar Staffers Decry ‘Win or Lose’ Trans Storyline Being Scrapped: “Can’t Tell You How Much I Cried”"
+      "Ex-Pixar Staffers Decry ‘Win or Lose’ Trans Storyline Being Scrapped: “Can’t Tell You How Much I Cried”"
     },
   ];
 
@@ -468,7 +468,7 @@ class ComingSoonMovies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: comingSoon, 
+      future: comingSoon,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -487,7 +487,7 @@ class ComingSoonMovies extends StatelessWidget {
         final movies = snapshot.data!;
 
         return SizedBox(
-          height: 300, 
+          height: 300,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 8),
@@ -513,14 +513,14 @@ class ComingSoonMovies extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
-                    // Điều hướng tới trang chi tiết của phim
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetailPage(movie: movie),
-                      ),
-                    );
-                  },
+                      // Điều hướng tới trang chi tiết của phim
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailPage(movie: movie),
+                        ),
+                      );
+                    },
                     child: Container(
                       width: 165, // Độ rộng cho mỗi item
                       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -618,7 +618,7 @@ class ComingSoonHeader extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) =>
-                      const MainScreen(initialIndex: 2), 
+                  const MainScreen(initialIndex: 2),
                 ),
               );
             },
@@ -705,7 +705,7 @@ class NowShowingMovies extends StatelessWidget {
                   },
 
                   child: Column(
-                    
+
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Hình ảnh trong Carousel
@@ -738,53 +738,50 @@ class NowShowingMovies extends StatelessWidget {
                           ),
                         ),
                       ),
-                  
+
                       // Hiển thị runtime dưới tiêu đề phim
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.access_time,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                          const SizedBox(
-                            width: 1,
-                          ),
-                          Text(
-                            formatRuntime(movieDetail.runtime),
-                            style: const TextStyle(
-                              fontSize: 12,
+                      Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // Giới hạn kích thước theo nội dung
+                          mainAxisAlignment: MainAxisAlignment.center, // Căn giữa ngang
+                          crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa dọc
+                          children: [
+                            const Icon(
+                              Icons.access_time,
                               color: Colors.white,
+                              size: 12,
                             ),
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          const Text(
-                            "•", // Dấu chấm tròn
-                            style: TextStyle(
-                              fontSize: 18, // Thay đổi kích thước dấu chấm
-                              color: Colors.white,
+                            const SizedBox(width: 1),
+                            Text(
+                              formatRuntime(movieDetail.runtime),
+                              style: const TextStyle(fontSize: 12, color: Colors.white),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            movie.genres.join(', '),
-                            style: const TextStyle(fontSize: 12),
-                          )
-                        ],
+                            const SizedBox(width: 3),
+                            const Text(
+                              "•",
+                              style: TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            const SizedBox(width: 3),
+                            Flexible( // Thay Expanded bằng Flexible để không ép toàn bộ không gian
+                              child: Text(
+                                movie.genres.join(', '),
+                                style: const TextStyle(fontSize: 12),
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center, // Căn giữa nội dung chữ
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                  
+
+
                       // Đánh giá phim
                       Container(
                         margin: const EdgeInsets.only(top: 2),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.star, color: Colors.yellow),
+                            const Icon(Icons.star, color: Colors.yellow,size: 17,),
                             Text(
                               movie.voteAverage.toStringAsFixed(1),
                               style: const TextStyle(fontSize: 16),
@@ -807,7 +804,7 @@ class NowShowingMovies extends StatelessWidget {
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 3),
             enlargeCenterPage: true,
-            aspectRatio: 0.75,
+            aspectRatio: 0.66,
             scrollPhysics: const BouncingScrollPhysics(),
             enableInfiniteScroll: true,
           ),
@@ -839,7 +836,7 @@ class NowShowingHeader extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) =>
-                      const MainScreen(initialIndex: 2), // 2 là tab Movies
+                  const MainScreen(initialIndex: 2), // 2 là tab Movies
                 ),
               );
             },
@@ -953,9 +950,9 @@ class _SearchBarState extends State<SearchBar> {
                 prefixIcon: const Icon(FeatherIcons.search, color: Colors.white),
                 suffixIcon: _controller.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.white),
-                        onPressed: _clearSearch,
-                      )
+                  icon: const Icon(Icons.clear, color: Colors.white),
+                  onPressed: _clearSearch,
+                )
                     : null,
                 hintText: 'Search movies...',
                 hintStyle: TextStyle(color: Colors.grey[600], fontSize: 18),
@@ -979,14 +976,14 @@ class _SearchBarState extends State<SearchBar> {
                   maxHeight: 300, // Giới hạn chiều cao danh sách kết quả
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8)
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(8)
                 ),
                 child: SingleChildScrollView(
                   child: Column(
                     children: _searchResults.map((movie) {
                       return ListTile(
-                        
+
                         leading: Image.network(
                           "https://image.tmdb.org/t/p/w200${movie.posterPath}",
                           fit: BoxFit.cover,
@@ -1018,9 +1015,3 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 }
-
-
-
-
-
-

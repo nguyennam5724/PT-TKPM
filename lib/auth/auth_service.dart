@@ -6,8 +6,8 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<String> signUpUser(
       {required String email,
-      required String userName,
-      required password}) async {
+        required String userName,
+        required password}) async {
     String res = "Something went wrong";
     try {
       if (email.isNotEmpty || password.isNotEmpty || userName.isNotEmpty) {

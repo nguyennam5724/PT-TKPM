@@ -22,9 +22,9 @@ class _MoviePageState extends State<MoviePage> {
   final List<String> categories = ['Now Playing', 'Coming Soon'];
   late int selectedIndex;
   late final Future<List<Movie>> _nowPlayingMovies =
-      APIserver().getNowShowing();
+  APIserver().getNowShowing();
   late final Future<List<Movie>> _comingSoonMovies =
-      APIserver().getComingSoon();
+  APIserver().getComingSoon();
   @override
   void initState() {
     super.initState();
@@ -92,7 +92,7 @@ class _MoviePageState extends State<MoviePage> {
             Expanded(
               child: FutureBuilder<List<Movie>>(
                 future:
-                    selectedIndex == 0 ? _nowPlayingMovies : _comingSoonMovies,
+                selectedIndex == 0 ? _nowPlayingMovies : _comingSoonMovies,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -129,10 +129,10 @@ class _MoviePageState extends State<MoviePage> {
                                   } else if (!movieDetailSnapshot.hasData) {
                                     return const Center(
                                         child:
-                                            Text("No movie details available"));
+                                        Text("No movie details available"));
                                   } else {
                                     final movieDetail =
-                                        movieDetailSnapshot.data!;
+                                    movieDetailSnapshot.data!;
                                     return GestureDetector(
                                       onTap: () {
                                         // Điều hướng tới trang chi tiết của phim
@@ -150,15 +150,15 @@ class _MoviePageState extends State<MoviePage> {
                                             horizontal: 8, vertical: 8),
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Container(
                                               height: 270,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 image: DecorationImage(
                                                   image: NetworkImage(
                                                     "https://image.tmdb.org/t/p/original${movie1.posterPath}",
@@ -176,7 +176,7 @@ class _MoviePageState extends State<MoviePage> {
                                                     color: Color(0xFFFCC434),
                                                     fontSize: 16,
                                                     fontWeight:
-                                                        FontWeight.bold)),
+                                                    FontWeight.bold)),
                                             Row(
                                               children: [
                                                 const Icon(
@@ -255,7 +255,7 @@ class _MoviePageState extends State<MoviePage> {
                                           movie2.id), // Gọi chi tiết bộ phim 1
                                       builder: (context, movieDetailSnapshot) {
                                         if (movieDetailSnapshot
-                                                .connectionState ==
+                                            .connectionState ==
                                             ConnectionState.waiting) {
                                           return const CircularProgressIndicator();
                                         } else if (movieDetailSnapshot
@@ -270,7 +270,7 @@ class _MoviePageState extends State<MoviePage> {
                                                   "No movie details available"));
                                         } else {
                                           final movieDetail =
-                                              movieDetailSnapshot.data!;
+                                          movieDetailSnapshot.data!;
                                           return GestureDetector(
                                             onTap: () {
                                               // Điều hướng tới trang chi tiết của phim
@@ -286,21 +286,21 @@ class _MoviePageState extends State<MoviePage> {
                                             child: Container(
                                               width: double.infinity,
                                               margin:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 8),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 8),
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 children: [
                                                   Container(
                                                     height: 270,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                                      BorderRadius.circular(
+                                                          10),
                                                       image: DecorationImage(
                                                         image: NetworkImage(
                                                           "https://image.tmdb.org/t/p/original${movie2.posterPath}",
@@ -315,10 +315,10 @@ class _MoviePageState extends State<MoviePage> {
                                                   Text(movie2.title,
                                                       style: const TextStyle(
                                                           color:
-                                                              Color(0xFFFCC434),
+                                                          Color(0xFFFCC434),
                                                           fontSize: 16,
                                                           fontWeight:
-                                                              FontWeight.bold)),
+                                                          FontWeight.bold)),
                                                   Row(
                                                     children: [
                                                       const Icon(
@@ -341,9 +341,9 @@ class _MoviePageState extends State<MoviePage> {
                                                       Text(
                                                           '(${movie2.voteCount})',
                                                           style:
-                                                              const TextStyle(
-                                                                  fontSize:
-                                                                      10)),
+                                                          const TextStyle(
+                                                              fontSize:
+                                                              10)),
                                                     ],
                                                   ),
                                                   Row(
@@ -383,8 +383,8 @@ class _MoviePageState extends State<MoviePage> {
                                                                     .white70,
                                                                 fontSize: 12,
                                                                 overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis)),
+                                                                TextOverflow
+                                                                    .ellipsis)),
                                                       ),
                                                     ],
                                                   ),

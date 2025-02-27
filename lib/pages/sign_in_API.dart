@@ -99,21 +99,21 @@ class _SignInAPIState extends State<SignInAPI> {
                     onTapDown: () {
                       setState(() {
                         _facebookButtonColor =
-                            const Color.fromARGB(111, 174, 146, 146);
+                        const Color.fromARGB(111, 174, 146, 146);
                         _facebookTextColor = Colors.black;
                       });
                     },
                     onTapUp: () {
                       setState(() {
                         _facebookButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _facebookTextColor = Colors.white;
                       });
                     },
                     onTapCancel: () {
                       setState(() {
                         _facebookButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _facebookTextColor = Colors.white;
                       });
                     },
@@ -130,21 +130,21 @@ class _SignInAPIState extends State<SignInAPI> {
                     onTapDown: () {
                       setState(() {
                         _googleButtonColor =
-                            const Color.fromARGB(111, 174, 146, 146);
+                        const Color.fromARGB(111, 174, 146, 146);
                         _googleTextColor = Colors.black;
                       });
                     },
                     onTapUp: () {
                       setState(() {
                         _googleButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _googleTextColor = Colors.white;
                       });
                     },
                     onTapCancel: () {
                       setState(() {
                         _googleButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _googleTextColor = Colors.white;
                       });
                     },
@@ -161,21 +161,21 @@ class _SignInAPIState extends State<SignInAPI> {
                     onTapDown: () {
                       setState(() {
                         _appleButtonColor =
-                            const Color.fromARGB(111, 174, 146, 146);
+                        const Color.fromARGB(111, 174, 146, 146);
                         _appleTextColor = Colors.black;
                       });
                     },
                     onTapUp: () {
                       setState(() {
                         _appleButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _appleTextColor = Colors.white;
                       });
                     },
                     onTapCancel: () {
                       setState(() {
                         _appleButtonColor =
-                            const Color.fromARGB(197, 55, 38, 38);
+                        const Color.fromARGB(197, 55, 38, 38);
                         _appleTextColor = Colors.white;
                       });
                     },
@@ -190,7 +190,7 @@ class _SignInAPIState extends State<SignInAPI> {
                         children: [
                           TextSpan(
                             text:
-                                "- - - - - - - - - - - - - - - - - - - -     ",
+                            "- - - - - - - - - - - - - - - - - - - -     ",
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                               fontSize: 12,
@@ -208,7 +208,7 @@ class _SignInAPIState extends State<SignInAPI> {
                           ),
                           TextSpan(
                             text:
-                                "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
+                            "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.5),
                               fontSize: 12,

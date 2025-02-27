@@ -16,19 +16,19 @@ class Movie {
 
   Movie(
       {required this.title,
-      required this.backDropPath,
-      required this.posterPath,
-      required this.voteAverage,
-      required this.voteCount,
-      required this.id,
-      required this.releaseDate,
-      required this.runtime,
-      required this.genres,
-      required this.overview,
-      required this.languages,
-      required this.certification,
-      required this.director,
-      required this.actor});
+        required this.backDropPath,
+        required this.posterPath,
+        required this.voteAverage,
+        required this.voteCount,
+        required this.id,
+        required this.releaseDate,
+        required this.runtime,
+        required this.genres,
+        required this.overview,
+        required this.languages,
+        required this.certification,
+        required this.director,
+        required this.actor});
 
   factory Movie.fromMap(
       Map<String, dynamic> map, List<String> genres, List<String> languages) {

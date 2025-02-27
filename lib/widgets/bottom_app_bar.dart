@@ -25,7 +25,7 @@ class MainScreenState extends State<MainScreen> {
     _pages = [
       HomePage(onTabChange: _onTabChange),
       const TicketPage(),
-      MoviePage(selectedCategory: 'Now Playing'),
+      const MoviePage(selectedCategory: 'Now Playing'),
       const ProfilePage(),
     ];
   }
@@ -38,7 +38,7 @@ class MainScreenState extends State<MainScreen> {
 
   void navigateToMovies(String category) {
     setState(() {
-      _currentIndex = 2; 
+      _currentIndex = 2;
     });
 
     // Thay đổi danh mục trong MoviePage
