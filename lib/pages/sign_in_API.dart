@@ -191,39 +191,44 @@ class _SignInAPIState extends State<SignInAPI> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: DashedDivider(
-                          color: Color.fromARGB(255, 149, 148, 148),
-                          dashWidth: 4.5,
-                          dashSpace: 5,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          ' or ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontFamily: 'Kanit',
-                            fontWeight: FontWeight.bold,
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "- - - - - - - - - - - - - - - - - - - -     ",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 12,
+                              fontFamily: 'FontStyle',
+                            ),
                           ),
-                        ),
+                          const TextSpan(
+                            text: "or",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontFamily: 'Kanit',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 12,
+                              fontFamily: 'FontStyle',
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: DashedDivider(
-                          color: Color.fromARGB(255, 149, 148, 148),
-                          dashWidth: 4.5,
-                          dashSpace: 5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
+                      maxLines: 1,
+                    ),
                   ),
                   GestureDetector(
                     onTapDown: (_) {

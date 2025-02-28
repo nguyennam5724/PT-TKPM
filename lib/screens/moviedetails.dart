@@ -4,6 +4,7 @@ import 'package:moviego/Model/movie.dart';
 import 'package:moviego/Services/services.dart';
 import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/screens/select_seat.dart';
+import 'package:moviego/widgets/dialog_helper.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -66,7 +67,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
           final movieDetail = snapshot.data!;
 
-          // Ảnh trên cùng
           return Stack(
             children: [
               Image.network(
@@ -275,31 +275,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const SizedBox(height: 20),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Movie genre:",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xFFCDCDCD)),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Expanded(
-                                  child: ReadMoreText(
-                                    movieDetail.genres.join(', '),
-                                    style: const TextStyle(fontSize: 16),
-                                    trimLines: 1,
-                                    trimLength: 30,
-                                    colorClickableText: Colors.yellow,
-                                    trimMode: TrimMode.Line,
-                                    trimCollapsedText: 'See more',
-                                    trimExpandedText: ' See less',
-                                  ),
-                                ),
-                              ],
-                            ),
+                            Genres(movieDetail: movieDetail),
                             const SizedBox(
                               height: 7,
                             ),
@@ -307,33 +283,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             const SizedBox(
                               height: 7,
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Language:",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFFCDCDCD),
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                                const SizedBox(
-                                  width: 7,
-                                ),
-                                Expanded(
-                                  child: ReadMoreText(
-                                    movieDetail.languages.join(', '),
-                                    style: const TextStyle(fontSize: 16),
-                                    trimLines: 1,
-                                    trimLength: 30,
-                                    colorClickableText: Colors.yellow,
-                                    trimMode: TrimMode.Line,
-                                    trimCollapsedText: 'See more',
-                                    trimExpandedText: ' See less',
-                                  ),
-                                ),
-                              ],
-                            ),
+                            Language(movieDetail: movieDetail),
                             const SizedBox(
                               height: 15,
                             ),
@@ -512,18 +462,38 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               ),
                               child: TextButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                                secondaryAnimation) =>
-                                            const SelectSeat(),
-                                        transitionDuration:
-                                            Duration.zero, // Không có hiệu ứng
-                                        reverseTransitionDuration: Duration
-                                            .zero, // Không hiệu ứng khi quay lại
-                                      ),
-                                    );
+                                    if (_selectedIndex == -1) {
+                                      DialogHelper.showCustomDialog(
+                                          context,
+                                          "Thông báo",
+                                          "Vui lòng chọn rạp chiếu phim trước khi tiếp tục!");
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              SelectSeat(
+                                            movieTitle: movieDetail.title,
+                                            movieRuntime: movieDetail.runtime,
+                                            cinemaName:
+                                                cinemaList[_selectedIndex]
+                                                    ["name"]!,
+                                            cinemaAddress:
+                                                cinemaList[_selectedIndex]
+                                                    ["address"]!,
+                                            cinemaImage:
+                                                cinemaList[_selectedIndex]
+                                                    ["image"]!,
+                                            moviePoster: movieDetail.posterPath,
+                                            genres: movieDetail.genres,
+                                          ),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration:
+                                              Duration.zero,
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: const Text(
                                     "Continue",
@@ -532,7 +502,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black),
                                   )),
-                            ),
+                            )
                           ],
                         ),
                       ],
@@ -550,6 +520,322 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           );
         },
       ),
+    );
+  }
+
+  StatefulBuilder buildCinema() {
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        children: List.generate(cinemaList.length, (index) {
+          return cinema(setState, index);
+        }),
+      );
+    });
+  }
+
+  GestureDetector cinema(StateSetter setState, int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            color: _selectedIndex == index
+                ? const Color(0xFF261D08)
+                : const Color(0xFF1C1C1C),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: _selectedIndex == index
+                  ? const Color(0xFFFCC434)
+                  : Colors.transparent,
+              width: 2,
+            )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    cinemaList[index]["name"]!,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 22),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    cinemaList[index]["address"]!,
+                    style: const TextStyle(color: Colors.white),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30, // Giới hạn chiều rộng của ảnh
+              child: Image.asset(
+                cinemaList[index]["image"]!,
+                fit: BoxFit.cover, // Đảm bảo ảnh không bị cắt
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container buildInfor1(Movie movieDetail, BuildContext context) {
+    return Container(
+      // Nền mờ cho chữ
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFF1C1C1C),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            movieDetail.title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Text(
+                formatRuntime(movieDetail.runtime),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+              ),
+              const Text(" • ", style: TextStyle(color: Colors.white)),
+              Text(
+                formatDate(widget.movie.releaseDate),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Row(
+            children: [
+              const Text("Review",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(
+                width: 5,
+              ),
+              const Icon(
+                Icons.star,
+                color: Colors.yellow,
+                size: 16,
+              ),
+              const SizedBox(width: 2),
+              Text(
+                widget.movie.voteAverage.toStringAsFixed(1),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '(${widget.movie.voteCount})',
+                style: const TextStyle(fontSize: 12, color: Colors.white),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              StatefulBuilder(
+                builder: (context, setStarState) {
+                  return Row(
+                    children: List.generate(5, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 2.0),
+                        child: SizedBox(
+                          width: 32,
+                          child: IconButton(
+                            icon: Icon(
+                              index < _selectedStars ? Icons.star : Icons.star,
+                              color: index < _selectedStars
+                                  ? const Color(0xFFFCC434)
+                                  : const Color(0xFF575757),
+                              size: 34,
+                            ),
+                            onPressed: () {
+                              setStarState(() {
+                                _selectedStars = index + 1;
+                              });
+                              _saveSelectedStars(index + 1);
+                            },
+                            padding: const EdgeInsets.all(0),
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              // Nút xem trailer
+              Container(
+                padding: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: const Color(0xFFBFBFBF),
+                  ),
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    // Gọi API để lấy URL trailer
+                    final trailerUrl =
+                        await APIserver().getMovieTrailer(movieDetail.id);
+
+                    if (trailerUrl != null) {
+                      final embedUrl = _convertToEmbedUrl(trailerUrl);
+
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Scaffold(
+                            appBar: AppBar(
+                              title: const Text("Trailer"),
+                              automaticallyImplyLeading: false,
+                              actions: [
+                                IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                            body: WebViewWidget(
+                              controller: WebViewController()
+                                ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                                ..loadRequest(Uri.parse(embedUrl)),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Hiển thị thông báo nếu không tìm thấy trailer
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Không tìm thấy trailer!'),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.play_arrow,
+                    color: Color(0xFFBFBFBF),
+                  ),
+                  label: const Text(
+                    "Xem Trailer",
+                    style: TextStyle(color: Color(0xFFBFBFBF)),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Language extends StatelessWidget {
+  const Language({
+    super.key,
+    required this.movieDetail,
+  });
+
+  final Movie movieDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Language:",
+          style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFFCDCDCD),
+              overflow: TextOverflow.ellipsis),
+        ),
+        const SizedBox(
+          width: 7,
+        ),
+        Expanded(
+          child: ReadMoreText(
+            movieDetail.languages.join(', '),
+            style: const TextStyle(fontSize: 16),
+            trimLines: 1,
+            trimLength: 30,
+            colorClickableText: Colors.yellow,
+            trimMode: TrimMode.Line,
+            trimCollapsedText: 'See more',
+            trimExpandedText: ' See less',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Genres extends StatelessWidget {
+  const Genres({
+    super.key,
+    required this.movieDetail,
+  });
+
+  final Movie movieDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Movie genre:",
+          style: TextStyle(fontSize: 16, color: Color(0xFFCDCDCD)),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Expanded(
+          child: ReadMoreText(
+            movieDetail.genres.join(', '),
+            style: const TextStyle(fontSize: 16),
+            trimLines: 1,
+            trimLength: 30,
+            colorClickableText: Colors.yellow,
+            trimMode: TrimMode.Line,
+            trimCollapsedText: 'See more',
+            trimExpandedText: ' See less',
+          ),
+        ),
+      ],
     );
   }
 }
