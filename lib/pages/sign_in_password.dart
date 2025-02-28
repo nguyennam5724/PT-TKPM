@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moviego/CustomUI/LineCustom.dart';
+import 'package:moviego/LoginWithGoogle/google_auth.dart';
 import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/pages/register.dart';
 import 'package:moviego/pages/snack_bar.dart';
-import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class SignInPass extends StatefulWidget {
@@ -133,6 +134,9 @@ class _SignInPassState extends State<SignInPass> {
             child: Column(
               children: [
                 TextFormField(
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
                   controller: _emailController,
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                   decoration: const InputDecoration(
@@ -156,6 +160,9 @@ class _SignInPassState extends State<SignInPass> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
                   controller: _passwordController,
                   obscureText: _isObscured,
                   style: const TextStyle(color: Colors.white, fontSize: 18),
@@ -306,43 +313,39 @@ class _SignInPassState extends State<SignInPass> {
           const SizedBox(
             height: 24,
           ),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "- - - - - - - - - - - - - -     ",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 12,
-                      fontFamily: 'FontStyle',
-                    ),
-                  ),
-                  const TextSpan(
-                    text: "or continue with",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontFamily: 'Kanit',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text:
-                        "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 12,
-                      fontFamily: 'FontStyle',
-                    ),
-                  ),
-                ],
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: DashedDivider(
+                  color: Colors.white,
+                  dashWidth: 4.5,
+                  dashSpace: 5,
+                ),
               ),
-              maxLines: 1,
-            ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'or continue with',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontFamily: 'Kanit',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: DashedDivider(
+                  color: Colors.white,
+                  dashWidth: 4.5,
+                  dashSpace: 5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -394,10 +397,17 @@ class _SignInPassState extends State<SignInPass> {
                         const Color.fromARGB(111, 174, 146, 146);
                   });
                 },
-                onTapUp: (_) {
+                onTapUp: (_) async {
                   setState(() {
                     _googleButtonColor = const Color.fromARGB(197, 55, 38, 38);
                   });
+                  await FirebaseServices().signInWithGoogle();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainScreen(),
+                    ),
+                  );
                 },
                 onTapCancel: () {
                   setState(() {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:moviego/CustomUI/linecustom.dart';
 import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/pages/sign_in_password.dart';
 import 'package:moviego/pages/snack_bar.dart';
-import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class Register extends StatefulWidget {
@@ -131,6 +131,9 @@ class _RegisterState extends State<Register> {
           Column(
             children: [
               TextFormField(
+                onTapOutside: (event) {
+                  FocusScope.of(context).unfocus();
+                },
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
@@ -154,6 +157,9 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                onTapOutside: (event) {
+                  FocusScope.of(context).unfocus();
+                },
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
@@ -177,6 +183,9 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                onTapOutside: (event) {
+                  FocusScope.of(context).unfocus();
+                },
                 obscureText: _isObscured,
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 decoration: InputDecoration(
@@ -260,43 +269,39 @@ class _RegisterState extends State<Register> {
           const SizedBox(
             height: 24,
           ),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "- - - - - - - - - - - - - -     ",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 12,
-                      fontFamily: 'FontStyle',
-                    ),
-                  ),
-                  const TextSpan(
-                    text: "or continue with",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontFamily: 'Kanit',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text:
-                        "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 12,
-                      fontFamily: 'FontStyle',
-                    ),
-                  ),
-                ],
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: DashedDivider(
+                  color: Colors.white,
+                  dashWidth: 4.5,
+                  dashSpace: 5,
+                ),
               ),
-              maxLines: 1,
-            ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  'or continue with',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontFamily: 'Kanit',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: DashedDivider(
+                  color: Colors.white,
+                  dashWidth: 4.5,
+                  dashSpace: 5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

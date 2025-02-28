@@ -6,8 +6,6 @@ import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/screens/select_seat.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MovieDetailPage extends StatefulWidget {
@@ -30,7 +28,7 @@ String _convertToEmbedUrl(String url) {
 class _MovieDetailPageState extends State<MovieDetailPage> {
   int _selectedIndex = -1;
   int _selectedStars = 0;
- @override
+  @override
   void initState() {
     super.initState();
     _loadSelectedStars(); // Tải trạng thái đã lưu khi khởi tạo
@@ -40,19 +38,20 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   Future<void> _loadSelectedStars() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedStars = prefs.getInt('selectedStars_${widget.movie.id}') ?? 0; // Lấy giá trị hoặc mặc định là 0
+      _selectedStars = prefs.getInt('selectedStars_${widget.movie.id}') ??
+          0; // Lấy giá trị hoặc mặc định là 0
     });
   }
 
   // Hàm lưu trạng thái sao cho bộ phim hiện tại
   Future<void> _saveSelectedStars(int stars) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('selectedStars_${widget.movie.id}', stars); // Lưu số sao đã chọn cho bộ phim này
+    await prefs.setInt('selectedStars_${widget.movie.id}',
+        stars); // Lưu số sao đã chọn cho bộ phim này
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: FutureBuilder<Movie>(
         future: APIserver().getMovieDetail(widget.movie.id),
@@ -78,9 +77,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
               SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: 180.0, left: 16, right: 16),
-                  child:  Column(
+                    padding:
+                        const EdgeInsets.only(top: 180.0, left: 16, right: 16),
+                    child: Column(
                       children: [
                         Container(
                           // Nền mờ cho chữ
@@ -150,10 +149,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               Row(
                                 children: [
                                   Row(
-                                    
                                     children: List.generate(5, (index) {
                                       return Padding(
-                                        padding: const EdgeInsets.only(right: 2.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 2.0),
                                         child: SizedBox(
                                           width: 32,
                                           child: IconButton(
@@ -161,7 +160,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                               index < _selectedStars
                                                   ? Icons.star
                                                   : Icons.star,
-                                              color:index < _selectedStars ? const Color(0xFFFCC434) : const Color(0xFF575757),
+                                              color: index < _selectedStars
+                                                  ? const Color(0xFFFCC434)
+                                                  : const Color(0xFF575757),
                                               size: 34,
                                             ),
                                             onPressed: () {
@@ -193,11 +194,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                         // Gọi API để lấy URL trailer
                                         final trailerUrl = await APIserver()
                                             .getMovieTrailer(movieDetail.id);
-                    
+
                                         if (trailerUrl != null) {
                                           final embedUrl =
                                               _convertToEmbedUrl(trailerUrl);
-                    
+
                                           showModalBottomSheet(
                                             context: context,
                                             isScrollControlled: true,
@@ -213,8 +214,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                                       false,
                                                   actions: [
                                                     IconButton(
-                                                      icon:
-                                                          const Icon(Icons.close),
+                                                      icon: const Icon(
+                                                          Icons.close),
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                       },
@@ -222,12 +223,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                                   ],
                                                 ),
                                                 body: WebViewWidget(
-                                                  controller: WebViewController()
-                                                    ..setJavaScriptMode(
-                                                        JavaScriptMode
-                                                            .unrestricted)
-                                                    ..loadRequest(
-                                                        Uri.parse(embedUrl)),
+                                                  controller:
+                                                      WebViewController()
+                                                        ..setJavaScriptMode(
+                                                            JavaScriptMode
+                                                                .unrestricted)
+                                                        ..loadRequest(Uri.parse(
+                                                            embedUrl)),
                                                 ),
                                               ),
                                             ),
@@ -237,8 +239,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             const SnackBar(
-                                              content:
-                                                  Text('Không tìm thấy trailer!'),
+                                              content: Text(
+                                                  'Không tìm thấy trailer!'),
                                             ),
                                           );
                                         }
@@ -383,7 +385,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                           color: _selectedIndex == 0
                                               ? const Color(0xFF261D08)
                                               : const Color(0xFF1C1C1C),
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           border: Border.all(
                                             color: _selectedIndex == 0
                                                 ? const Color(0xFFFCC434)
@@ -404,7 +407,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                                 Text(
                                                   "Vincom Ocean Park CGV ",
                                                   style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white,
                                                       fontSize: 22),
                                                 ),
@@ -445,7 +449,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                           color: _selectedIndex == 1
                                               ? const Color(0xFF261D08)
                                               : const Color(0xFF1C1C1C),
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           border: Border.all(
                                             color: _selectedIndex == 1
                                                 ? const Color(0xFFFCC434)
@@ -466,7 +471,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                                 Text(
                                                   "Lotte Cinema Long Bien ",
                                                   style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.white,
                                                       fontSize: 22),
                                                 ),
@@ -530,9 +536,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           ],
                         ),
                       ],
-                    )
-                  
-                ),
+                    )),
               ),
               SafeArea(
                 child: IconButton(

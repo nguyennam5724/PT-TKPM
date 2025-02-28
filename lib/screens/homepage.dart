@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -10,6 +11,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:moviego/Model/movie.dart';
 import 'package:moviego/Services/services.dart';
+import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/screens/moviedetails.dart';
 import 'package:moviego/widgets/bottom_app_bar.dart';
 
@@ -36,9 +38,31 @@ String formatRuntime(int runtime) {
 }
 
 class _HomePageState extends State<HomePage> {
-  final String userName = "Son Tung MTP";
+  String userName = "Guest";
   late Future<List<Movie>> nowShowing = APIserver().getNowShowing();
   late Future<List<Movie>> comingSoon = APIserver().getComingSoon();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserName();
+  }
+
+  void loadUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null &&
+        user.displayName != null &&
+        user.displayName!.isNotEmpty) {
+      setState(() {
+        userName = user.displayName!;
+      });
+    } else {
+      String fetchedName = await AuthService().getUserName();
+      setState(() {
+        userName = fetchedName;
+      });
+    }
+  }
 
   final List<Map<String, String>> movieNews = [
     {
@@ -119,7 +143,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(
               'Hi, $userName',
-              style: const TextStyle(fontSize: 14, color: Colors.white),
+              style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
             const Text(
               'MovieGo',
@@ -138,11 +162,20 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: ClipOval(
-            child: Image.asset(
-              'assets/images/mtp.jpg',
+            child: Image.network(
+              FirebaseAuth.instance.currentUser?.photoURL ??
+                  "https://example.com/default-avatar.png",
               width: 40,
               height: 40,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  'assets/images/avatar.png',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
         ),
@@ -468,7 +501,7 @@ class ComingSoonMovies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: comingSoon, 
+      future: comingSoon,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -487,7 +520,7 @@ class ComingSoonMovies extends StatelessWidget {
         final movies = snapshot.data!;
 
         return SizedBox(
-          height: 300, 
+          height: 300,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 8),
@@ -513,14 +546,14 @@ class ComingSoonMovies extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
-                    // Điều hướng tới trang chi tiết của phim
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetailPage(movie: movie),
-                      ),
-                    );
-                  },
+                      // Điều hướng tới trang chi tiết của phim
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailPage(movie: movie),
+                        ),
+                      );
+                    },
                     child: Container(
                       width: 165, // Độ rộng cho mỗi item
                       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -571,7 +604,8 @@ class ComingSoonMovies extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.calendar_month_outlined, size: 14),
+                              const Icon(Icons.calendar_month_outlined,
+                                  size: 14),
                               const SizedBox(width: 3),
                               Text(
                                 formatDate(movie.releaseDate),
@@ -617,8 +651,7 @@ class ComingSoonHeader extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      const MainScreen(initialIndex: 2), 
+                  builder: (context) => const MainScreen(initialIndex: 2),
                 ),
               );
             },
@@ -703,9 +736,7 @@ class NowShowingMovies extends StatelessWidget {
                       ),
                     );
                   },
-
                   child: Column(
-                    
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Hình ảnh trong Carousel
@@ -738,7 +769,7 @@ class NowShowingMovies extends StatelessWidget {
                           ),
                         ),
                       ),
-                  
+
                       // Hiển thị runtime dưới tiêu đề phim
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -777,7 +808,7 @@ class NowShowingMovies extends StatelessWidget {
                           )
                         ],
                       ),
-                  
+
                       // Đánh giá phim
                       Container(
                         margin: const EdgeInsets.only(top: 2),
@@ -863,7 +894,6 @@ class NowShowingHeader extends StatelessWidget {
   }
 }
 
-
 class SearchBar extends StatefulWidget {
   const SearchBar({super.key});
 
@@ -873,8 +903,8 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   final TextEditingController _controller = TextEditingController();
-  FocusNode _focusNode = FocusNode();
-  APIserver _apiServer = APIserver();
+  final FocusNode _focusNode = FocusNode();
+  final APIserver _apiServer = APIserver();
   List<Movie> _searchResults = [];
   bool _isSearching = false;
 
@@ -950,7 +980,8 @@ class _SearchBarState extends State<SearchBar> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
                 ),
-                prefixIcon: const Icon(FeatherIcons.search, color: Colors.white),
+                prefixIcon:
+                    const Icon(FeatherIcons.search, color: Colors.white),
                 suffixIcon: _controller.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear, color: Colors.white),
@@ -979,14 +1010,12 @@ class _SearchBarState extends State<SearchBar> {
                   maxHeight: 300, // Giới hạn chiều cao danh sách kết quả
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8)
-                ),
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(8)),
                 child: SingleChildScrollView(
                   child: Column(
                     children: _searchResults.map((movie) {
                       return ListTile(
-                        
                         leading: Image.network(
                           "https://image.tmdb.org/t/p/w200${movie.posterPath}",
                           fit: BoxFit.cover,
@@ -1001,7 +1030,8 @@ class _SearchBarState extends State<SearchBar> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MovieDetailPage(movie: movie),
+                              builder: (context) =>
+                                  MovieDetailPage(movie: movie),
                             ),
                           );
                         },
@@ -1011,16 +1041,9 @@ class _SearchBarState extends State<SearchBar> {
                 ),
               ),
             ),
-          if (_isSearching)
-            const Center(child: CircularProgressIndicator()),
+          if (_isSearching) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
   }
 }
-
-
-
-
-
-

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:moviego/CustomUI/LineCustom.dart';
+import 'package:moviego/LoginWithGoogle/google_auth.dart';
 import 'package:moviego/pages/register.dart';
 import 'package:moviego/pages/sign_in_btn.dart';
 import 'package:moviego/pages/sign_in_password.dart';
+import 'package:moviego/widgets/bottom_app_bar.dart';
 
 class SignInAPI extends StatefulWidget {
   const SignInAPI({super.key});
@@ -134,12 +137,19 @@ class _SignInAPIState extends State<SignInAPI> {
                         _googleTextColor = Colors.black;
                       });
                     },
-                    onTapUp: () {
+                    onTapUp: () async {
                       setState(() {
                         _googleButtonColor =
                             const Color.fromARGB(197, 55, 38, 38);
                         _googleTextColor = Colors.white;
                       });
+                      await FirebaseServices().signInWithGoogle();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainScreen(),
+                        ),
+                      );
                     },
                     onTapCancel: () {
                       setState(() {
@@ -181,44 +191,39 @@ class _SignInAPIState extends State<SignInAPI> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text:
-                                "- - - - - - - - - - - - - - - - - - - -     ",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 12,
-                              fontFamily: 'FontStyle',
-                            ),
-                          ),
-                          const TextSpan(
-                            text: "or",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontFamily: 'Kanit',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                "     - - - - - - - - - - - - - - - - - - - - - - - - - ",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 12,
-                              fontFamily: 'FontStyle',
-                            ),
-                          ),
-                        ],
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: DashedDivider(
+                          color: Color.fromARGB(255, 149, 148, 148),
+                          dashWidth: 4.5,
+                          dashSpace: 5,
+                        ),
                       ),
-                      maxLines: 1,
-                    ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          ' or ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontFamily: 'Kanit',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: DashedDivider(
+                          color: Color.fromARGB(255, 149, 148, 148),
+                          dashWidth: 4.5,
+                          dashSpace: 5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
                   ),
                   GestureDetector(
                     onTapDown: (_) {
