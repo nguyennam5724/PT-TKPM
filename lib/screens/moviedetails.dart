@@ -11,6 +11,8 @@ import 'package:moviego/widgets/genres.dart';
 import 'package:moviego/widgets/language.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MovieDetailPage extends StatefulWidget {
@@ -80,7 +82,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     await prefs.setInt('selectedStars_${widget.movie.id}', stars);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,9 +122,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     padding:
                         const EdgeInsets.only(top: 180.0, left: 16, right: 16),
                     child: Column(
-                    padding:
-                        const EdgeInsets.only(top: 180.0, left: 16, right: 16),
-                    child: Column(
                       children: [
                         buildInfor1(movieDetail, context),
                         Column(
@@ -132,7 +130,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           children: [
                             const SizedBox(height: 20),
                             Genres(movieDetail: movieDetail),
-                            Genres(movieDetail: movieDetail),
                             const SizedBox(
                               height: 7,
                             ),
@@ -140,7 +137,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             const SizedBox(
                               height: 7,
                             ),
-                            Language(movieDetail: movieDetail),
                             Language(movieDetail: movieDetail),
                             const SizedBox(
                               height: 15,
@@ -191,38 +187,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               ),
                               child: TextButton(
                                   onPressed: () {
-                                    if (_selectedIndex == -1) {
-                                      DialogHelper.showCustomDialog(
-                                          context,
-                                          "Thông báo",
-                                          "Vui lòng chọn rạp chiếu phim trước khi tiếp tục!");
-                                    } else {
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation,
-                                                  secondaryAnimation) =>
-                                              SelectSeat(
-                                            movieTitle: movieDetail.title,
-                                            movieRuntime: movieDetail.runtime,
-                                            cinemaName:
-                                                cinemaList[_selectedIndex]
-                                                    ["name"]!,
-                                            cinemaAddress:
-                                                cinemaList[_selectedIndex]
-                                                    ["address"]!,
-                                            cinemaImage:
-                                                cinemaList[_selectedIndex]
-                                                    ["image"]!,
-                                            moviePoster: movieDetail.posterPath,
-                                            genres: movieDetail.genres,
-                                          ),
-                                          transitionDuration: Duration.zero,
-                                          reverseTransitionDuration:
-                                              Duration.zero,
-                                        ),
-                                      );
-                                    }
                                     if (_selectedIndex == -1) {
                                       DialogHelper.showCustomDialog(
                                           context,

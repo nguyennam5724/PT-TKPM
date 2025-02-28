@@ -12,11 +12,7 @@ class ProfilePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         surfaceTintColor: Colors.black,
         centerTitle: true,
-<<<<<<< HEAD
-      ),
-=======
         ),
->>>>>>> deab196 (screen + db update)
     );
   }
 }

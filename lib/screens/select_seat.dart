@@ -142,7 +142,6 @@ class _SelectSeatState extends State<SelectSeat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         surfaceTintColor: Colors.black,
