@@ -25,7 +25,7 @@ class MainScreenState extends State<MainScreen> {
     _pages = [
       HomePage(onTabChange: _onTabChange),
       const TicketPage(),
-      const MoviePage(selectedCategory: 'Now Playing'),
+      MoviePage(selectedCategory: 'Now Playing'),
       const ProfilePage(),
     ];
   }

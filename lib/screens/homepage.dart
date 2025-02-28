@@ -14,6 +14,16 @@ import 'package:moviego/Services/services.dart';
 import 'package:moviego/auth/auth_service.dart';
 import 'package:moviego/screens/moviedetails.dart';
 import 'package:moviego/widgets/bottom_app_bar.dart';
+import 'package:moviego/widgets/coming_soon_header.dart';
+import 'package:moviego/widgets/coming_soon_movies.dart';
+import 'package:moviego/widgets/movie_news_header.dart';
+import 'package:moviego/widgets/movie_news_widget.dart';
+import 'package:moviego/widgets/now_showing_header.dart';
+import 'package:moviego/widgets/now_showing_movies.dart';
+import 'package:moviego/widgets/promo_discount.dart';
+import 'package:moviego/widgets/promo_discount_header.dart';
+import 'package:moviego/widgets/service_header.dart';
+import 'package:moviego/widgets/service_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required void Function(int index) onTabChange});
@@ -92,36 +102,70 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // Khởi tạo dữ liệu ban đầu
+  }
+
+  // Hàm tải dữ liệu từ API
+  void _loadData() {
+    setState(() {
+      nowShowing = APIserver().getNowShowing();
+      comingSoon = APIserver().getComingSoon();
+    });
+  }
+
+  Future<void> _onRefresh() async {
+  try {
+    _loadData();
+    await Future.wait([nowShowing, comingSoon]);
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Failed to refresh data: $e")),
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(userName),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: <Widget>[
-            const SearchBar(),
-            const SizedBox(height: 20),
-            const NowShowingHeader(),
-            const SizedBox(
-              height: 15,
+      body: Container(
+        color: Colors.black,
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          color: Colors.yellow,
+          child: SingleChildScrollView(
+            
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: <Widget>[
+                const SearchBar(),
+                const SizedBox(height: 20),
+                const NowShowingHeader(),
+                const SizedBox(
+                  height: 15,
+                ),
+                NowShowingMovies(nowShowing: nowShowing),
+                const ComingSoonHeader(),
+                const SizedBox(height: 15),
+                ComingSoonMovies(comingSoon: comingSoon),
+                const SizedBox(height: 15),
+                const PromoDiscountHeader(),
+                const SizedBox(height: 5),
+                const PromoDiscount(),
+                const ServiceHeader(),
+                const SizedBox(height: 5),
+                const ServiceWidget(),
+                const SizedBox(height: 10),
+                const MovieNewsHeader(),
+                const SizedBox(height: 5),
+                MovieNewsWidget(movieNews: movieNews)
+              ],
             ),
-            NowShowingMovies(nowShowing: nowShowing),
-            const ComingSoonHeader(),
-            const SizedBox(height: 15),
-            ComingSoonMovies(comingSoon: comingSoon),
-            const SizedBox(height: 15),
-            const PromoDiscountHeader(),
-            const SizedBox(height: 5),
-            const PromoDiscount(),
-            const ServiceHeader(),
-            const SizedBox(height: 5),
-            const ServiceWidget(),
-            const SizedBox(height: 10),
-            const MovieNewsHeader(),
-            const SizedBox(height: 5),
-            MovieNewsWidget(movieNews: movieNews)
-          ],
+          ),
         ),
       ),
       // bottomNavigationBar: Container(
@@ -189,717 +233,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class MovieNewsWidget extends StatelessWidget {
-  const MovieNewsWidget({
-    super.key,
-    required this.movieNews,
-  });
-
-  final List<Map<String, String>> movieNews;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(movieNews.length, (index) {
-            final movie = movieNews[index];
-            return GestureDetector(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("${movie['title']} tapped!")),
-                );
-              },
-              child: Container(
-                width: 200,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        movie['image']!,
-                        height: 150, // Đặt chiều cao cố định
-                        width: double.infinity, // Đặt chiều rộng vừa khung
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      movie['title']!,
-                      style: const TextStyle(fontSize: 14, color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-            );
-          })),
-    );
-  }
-}
-
-class MovieNewsHeader extends StatelessWidget {
-  const MovieNewsHeader({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 10, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Movie news",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              // code to navigate to another screen
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "See all",
-                  style: TextStyle(fontSize: 14, color: Colors.yellow),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(Icons.arrow_forward_ios, color: Colors.yellow, size: 14)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ServiceWidget extends StatelessWidget {
-  const ServiceWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Retal tapped!")),
-            );
-          },
-          child: Column(
-            children: [
-              ClipOval(
-                child: Image.asset(
-                  "assets/images/Retal.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                "Retal",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("IMAX tapped!")),
-            );
-          },
-          child: Column(
-            children: [
-              ClipOval(
-                child: Image.asset(
-                  "assets/images/Imax.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                "Imax",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("4DX tapped!")),
-            );
-          },
-          child: Column(
-            children: [
-              ClipOval(
-                child: Image.asset(
-                  "assets/images/4Dx.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                "4DX",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("SweetBox tapped!")),
-            );
-          },
-          child: Column(
-            children: [
-              ClipOval(
-                child: Image.asset(
-                  "assets/images/Sweetbox.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                "SweetBox",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ServiceHeader extends StatelessWidget {
-  const ServiceHeader({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 10, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Service",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              // code to navigate to another screen
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "See all",
-                  style: TextStyle(fontSize: 14, color: Colors.yellow),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(Icons.arrow_forward_ios, color: Colors.yellow, size: 14)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PromoDiscount extends StatelessWidget {
-  const PromoDiscount({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: Image.asset('assets/images/Discount.png'),
-    );
-  }
-}
-
-class PromoDiscountHeader extends StatelessWidget {
-  const PromoDiscountHeader({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 0, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Promo & Discount",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              // code to navigate to another screen
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "See all",
-                  style: TextStyle(fontSize: 14, color: Colors.yellow),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(Icons.arrow_forward_ios, color: Colors.yellow, size: 14)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ComingSoonMovies extends StatelessWidget {
-  const ComingSoonMovies({
-    super.key,
-    required this.comingSoon,
-  });
-
-  final Future<List<Movie>> comingSoon;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: comingSoon,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text("Error: ${snapshot.error}"),
-          );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text("No movies available"),
-          );
-        }
-
-        final movies = snapshot.data!;
-
-        return SizedBox(
-          height: 300,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(left: 8),
-            itemCount: movies.length,
-            itemBuilder: (context, index) {
-              final movie = movies[index];
-              return FutureBuilder<Movie>(
-                future: APIserver()
-                    .getMovieDetail(movie.id), // Gọi chi tiết bộ phim
-                builder: (context, movieDetailSnapshot) {
-                  if (movieDetailSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (movieDetailSnapshot.hasError) {
-                    return Center(
-                      child: Text("Error: ${movieDetailSnapshot.error}"),
-                    );
-                  } else if (!movieDetailSnapshot.hasData) {
-                    return const Center(
-                      child: Text("No movie details available"),
-                    );
-                  }
-
-                  return GestureDetector(
-                    onTap: () {
-                      // Điều hướng tới trang chi tiết của phim
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailPage(movie: movie),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 165, // Độ rộng cho mỗi item
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 230,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  "https://image.tmdb.org/t/p/original${movie.posterPath}",
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 7),
-                          // Tên phim
-                          Text(
-                            movie.title,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Row(
-                            children: [
-                              const FaIcon(
-                                FontAwesomeIcons.video,
-                                size: 12,
-                              ),
-                              const SizedBox(width: 3),
-                              Expanded(
-                                child: Text(
-                                  movie.genres.join(", "),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_month_outlined,
-                                  size: 14),
-                              const SizedBox(width: 3),
-                              Text(
-                                formatDate(movie.releaseDate),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Hiển thị runtime dưới tên phim
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ComingSoonHeader extends StatelessWidget {
-  const ComingSoonHeader({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Coming soon",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const MainScreen(initialIndex: 2),
-                ),
-              );
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "See all",
-                  style: TextStyle(fontSize: 14, color: Colors.yellow),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(Icons.arrow_forward_ios, color: Colors.yellow, size: 14)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class NowShowingMovies extends StatelessWidget {
-  const NowShowingMovies({
-    super.key,
-    required this.nowShowing,
-  });
-
-  final Future<List<Movie>> nowShowing;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: nowShowing,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text("Error: ${snapshot.error}"),
-          );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text("No movies available"),
-          );
-        }
-        final movies = snapshot.data!;
-
-        return CarouselSlider.builder(
-          itemCount: movies.length,
-          itemBuilder: (context, index, movieIndex) {
-            final movie = movies[index];
-
-            return FutureBuilder<Movie>(
-              future: APIserver().getMovieDetail(movie.id),
-              builder: (context, movieDetailSnapshot) {
-                if (movieDetailSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (movieDetailSnapshot.hasError) {
-                  return Center(
-                    child: Text("Error: ${movieDetailSnapshot.error}"),
-                  );
-                } else if (!movieDetailSnapshot.hasData) {
-                  return const Center(
-                    child: Text("No movie details available"),
-                  );
-                }
-
-                final movieDetail = movieDetailSnapshot.data!;
-
-                return GestureDetector(
-                  onTap: () {
-                    // Điều hướng tới trang chi tiết của phim
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetailPage(movie: movie),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Hình ảnh trong Carousel
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                "https://image.tmdb.org/t/p/original${movie.posterPath}",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Tiêu đề của phim
-                      Container(
-                        margin: const EdgeInsets.only(top: 5),
-                        child: Center(
-                          child: Text(
-                            movie.title,
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                      ),
-
-                      // Hiển thị runtime dưới tiêu đề phim
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize
-                              .min, // Giới hạn kích thước theo nội dung
-                          mainAxisAlignment:
-                              MainAxisAlignment.center, // Căn giữa ngang
-                          crossAxisAlignment:
-                              CrossAxisAlignment.center, // Căn giữa dọc
-                          children: [
-                            const Icon(
-                              Icons.access_time,
-                              color: Colors.white,
-                              size: 12,
-                            ),
-                            const SizedBox(width: 1),
-                            Text(
-                              formatRuntime(movieDetail.runtime),
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.white),
-                            ),
-                            const SizedBox(width: 3),
-                            const Text(
-                              "•",
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                            const SizedBox(width: 3),
-                            Flexible(
-                              // Thay Expanded bằng Flexible để không ép toàn bộ không gian
-                              child: Text(
-                                movie.genres.join(', '),
-                                style: const TextStyle(fontSize: 12),
-                                overflow: TextOverflow.ellipsis,
-                                textAlign:
-                                    TextAlign.center, // Căn giữa nội dung chữ
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Đánh giá phim
-                      Container(
-                        margin: const EdgeInsets.only(top: 2),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 17,
-                            ),
-                            Text(
-                              movie.voteAverage.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            Text('(${movie.voteCount})',
-                                style: const TextStyle(fontSize: 10)),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-          options: CarouselOptions(
-            autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 3),
-            enlargeCenterPage: true,
-            aspectRatio: 0.66,
-            scrollPhysics: const BouncingScrollPhysics(),
-            enableInfiniteScroll: true,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class NowShowingHeader extends StatelessWidget {
-  const NowShowingHeader({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20, right: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "Now playing",
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const MainScreen(initialIndex: 2), // 2 là tab Movies
-                ),
-              );
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "See all",
-                  style: TextStyle(fontSize: 14, color: Colors.yellow),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Icon(Icons.arrow_forward_ios, color: Colors.yellow, size: 14)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class SearchBar extends StatefulWidget {
   const SearchBar({super.key});
@@ -910,6 +243,8 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final APIserver _apiServer = APIserver();
   final FocusNode _focusNode = FocusNode();
   final APIserver _apiServer = APIserver();
   List<Movie> _searchResults = [];

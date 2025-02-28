@@ -1,0 +1,2 @@
+C:/Personal/Moblie/moviego/android/app/.cxx/Debug/2l3x1k4g/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Personal/Moblie/moviego/android/app/.cxx/Debug/2l3x1k4g/arm64-v8a/CMakeFiles/rebuild_cache.dir

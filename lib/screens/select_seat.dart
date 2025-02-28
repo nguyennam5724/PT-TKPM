@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:moviego/screens/payment.dart';
@@ -14,10 +15,13 @@ class SelectSeat extends StatefulWidget {
 
   const SelectSeat(
       {super.key,
-        required this.movieTitle,
-        required this.cinemaName,
-        required this.moviePoster,
-        required this.genres, required this.cinemaAddress, required this.cinemaImage, required this.movieRuntime});
+      required this.movieTitle,
+      required this.cinemaName,
+      required this.moviePoster,
+      required this.genres,
+      required this.cinemaAddress,
+      required this.cinemaImage,
+      required this.movieRuntime});
 
   @override
   _SelectSeatState createState() => _SelectSeatState();
@@ -28,8 +32,7 @@ class _SelectSeatState extends State<SelectSeat> {
   final int cols = 12;
   List<List<bool>> selectedSeats = [];
   List<String> selectedSeatsList = [];
-  List<List<bool>> bookedSeats =
-  List.generate(9, (i) => List.filled(12, false));
+  List<List<bool>> bookedSeats = [];
   List<String> availableTimes = [
     '9:00',
     '13:00',
@@ -39,16 +42,14 @@ class _SelectSeatState extends State<SelectSeat> {
     '22:30'
   ];
 
+  DateTime selectedDate = DateTime.now();
+  int selectedTimeIndex = 0;
+  final int seatPrice = 70000;
+
   bool isSameDay(DateTime d1, DateTime d2) {
     return d1.month == d2.month && d1.day == d2.day;
   }
 
-  DateTime selectedDate = DateTime.now();
-  int selectedTimeIndex = 0;
-
-  final int seatPrice = 70000;
-
-  //Ham tinh tong tien
   int caculatePrice() {
     int totalAmount = 0;
     for (int i = 0; i < rows; i++) {
@@ -61,7 +62,7 @@ class _SelectSeatState extends State<SelectSeat> {
     return totalAmount;
   }
 
-  void seat() {
+  void updateSelectedSeatsList() {
     selectedSeatsList.clear();
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
@@ -73,13 +74,15 @@ class _SelectSeatState extends State<SelectSeat> {
     print("Selected Seats: $selectedSeatsList");
   }
 
-  @override
-  void initState() {
-    super.initState();
-    selectedSeats = List.generate(rows, (i) => List.filled(cols, false));
-    bookedSeats[0][1] = true;
-    bookedSeats[1][3] = true;
-    bookedSeats[3][2] = true;
+  Stream<DocumentSnapshot> getBookedSeatsStream() {
+    String showtimeID =
+        "${widget.movieTitle}_${DateFormat('yyyy-MM-dd').format(selectedDate)}_${availableTimes[selectedTimeIndex]}";
+    return FirebaseFirestore.instance
+        .collection('cinemas')
+        .doc(widget.cinemaName)
+        .collection('showtimes')
+        .doc(showtimeID)
+        .snapshots();
   }
 
   void toggleSeat(int row, int col) {
@@ -94,9 +97,51 @@ class _SelectSeatState extends State<SelectSeat> {
     return '${String.fromCharCode(65 + row)}${col + 1}';
   }
 
+  Future<void> saveBookedSeats() async {
+    try {
+      String showtimeID =
+          "${widget.movieTitle}_${DateFormat('yyyy-MM-dd').format(selectedDate)}_${availableTimes[selectedTimeIndex]}";
+      DocumentReference docRef = FirebaseFirestore.instance
+          .collection('cinemas')
+          .doc(widget.cinemaName)
+          .collection('showtimes')
+          .doc(showtimeID);
+
+      DocumentSnapshot doc = await docRef.get();
+      List<String> existingBookedSeats =
+          doc.exists ? List<String>.from(doc['bookedSeats'] ?? []) : [];
+
+      // Thêm ghế mới đã chọn vào danh sách hiện có
+      existingBookedSeats.addAll(selectedSeatsList
+          .where((seat) => !existingBookedSeats.contains(seat)));
+
+      await docRef.set({
+        'movieTitle': widget.movieTitle,
+        'showDate': DateFormat('yyyy-MM-dd').format(selectedDate),
+        'showTime': availableTimes[selectedTimeIndex],
+        'bookedSeats': existingBookedSeats,
+        'timestamp': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      print("Booked seats saved to Firestore: $existingBookedSeats");
+    } catch (e) {
+      print("Error saving booked seats: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to save seats: $e")),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSeats = List.generate(rows, (i) => List.filled(cols, false));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -104,148 +149,194 @@ class _SelectSeatState extends State<SelectSeat> {
         title: const Text('Select Seat'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Image.asset("assets/images/screen.png"),
-              ),
-              SizedBox(
-                height: 350,
-                child: buildSeats(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: getBookedSeatsStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              print("Stream error: ${snapshot.error}");
+              return const Center(
+                  child: Text("Error loading seats",
+                      style: TextStyle(color: Colors.white)));
+            }
+
+            if (snapshot.hasData && snapshot.data!.exists) {
+              List<String> bookedSeatsList =
+                  List<String>.from(snapshot.data!['bookedSeats'] ?? []);
+              bookedSeats =
+                  List.generate(rows, (i) => List.filled(cols, false));
+              for (String seat in bookedSeatsList) {
+                int row = seat.codeUnitAt(0) - 65;
+                int col = int.parse(seat.substring(1)) - 1;
+                if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                  bookedSeats[row][col] = true;
+                }
+              }
+            } else {
+              bookedSeats =
+                  List.generate(rows, (i) => List.filled(cols, false));
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    buildSeatStatusBar(
-                        color: const Color(0xFF1C1C1C), content: 'Available'),
-                    buildSeatStatusBar(
-                        color: const Color(0xFF261D08), content: 'Reserved'),
-                    buildSeatStatusBar(
-                        color: const Color(0xFFFCC434), content: 'Selected'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Image.asset("assets/images/screen.png"),
+                    ),
+                    SizedBox(
+                      height: 380,
+                      child: buildSeats(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16, bottom: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          buildSeatStatusBar(
+                              color: const Color(0xFF1C1C1C),
+                              content: 'Available'),
+                          buildSeatStatusBar(
+                              color: const Color(0xFF261D08),
+                              content: 'Reserved'),
+                          buildSeatStatusBar(
+                              color: const Color(0xFFFCC434),
+                              content: 'Selected'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      "Select Date & Time",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 30,
+                          itemBuilder: (context, index) {
+                            DateTime date =
+                                DateTime.now().add(Duration(days: index));
+                            return buildDateWidget(date);
+                          }),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: availableTimes.length,
+                          itemBuilder: (context, index) {
+                            return buildTimeWidget(index);
+                          }),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    const Divider(
+                      color: Color(0xFF2E2E2E),
+                      height: 0.2,
+                      thickness: 1,
+                    ),
+                    Row(
+                      mainAxisAlignment: caculatePrice() > 0
+                          ? MainAxisAlignment.spaceEvenly
+                          : MainAxisAlignment.center,
+                      children: [
+                        if (caculatePrice() > 0)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Total"),
+                              Text(
+                                NumberFormat.currency(
+                                        locale: "vi_VN", symbol: "VND ")
+                                    .format(caculatePrice()),
+                                style: const TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              updateSelectedSeatsList();
+                              if (caculatePrice() > 0) {
+                                await saveBookedSeats();
+                                if (mounted) {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          Payment(
+                                              movieTitle: widget.movieTitle,
+                                              cinemaName: widget.cinemaName,
+                                              cinemaAddress:
+                                                  widget.cinemaAddress,
+                                              cinemaImage: widget.cinemaImage,
+                                              selectedSeats: selectedSeatsList,
+                                              showTime: availableTimes[
+                                                  selectedTimeIndex],
+                                              totalPrice: caculatePrice(),
+                                              showDate: selectedDate,
+                                              moviePoster: widget.moviePoster,
+                                              genres: widget.genres,
+                                              movieRuntime:
+                                                  widget.movieRuntime),
+                                      transitionDuration: Duration.zero,
+                                      reverseTransitionDuration: Duration.zero,
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return child;
+                                      },
+                                    ),
+                                  );
+                                }
+                              } else {
+                                DialogHelper.showCustomDialog(
+                                    context,
+                                    "Thông báo",
+                                    "Vui lòng chọn ghế trước khi tiếp tục!");
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFCC434),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 14, horizontal: 28),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: const Text(
+                              'Buy Ticket',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "Select Date & Time",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              SizedBox(
-                height: 100,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 30,
-                    itemBuilder: (context, index) {
-                      DateTime date = DateTime.now().add(Duration(days: index));
-                      return buildDateWidget(date);
-                    }),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: availableTimes.length,
-                    itemBuilder: (context, index) {
-                      return buildTimeWidget(index);
-                    }),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              const Divider(
-                color: Color(0xFF2E2E2E),
-                height: 0.2,
-                thickness: 1,
-              ),
-              Row(
-                mainAxisAlignment: caculatePrice() > 0
-                    ? MainAxisAlignment.spaceEvenly
-                    : MainAxisAlignment.center,
-                children: [
-                  if (caculatePrice() > 0)
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Total"),
-                        Text(
-                          NumberFormat.currency(locale: "vi_VN", symbol: "VND ")
-                              .format(caculatePrice()),
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        seat();
-                        if (caculatePrice() > 0) {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                  Payment(
-                                      movieTitle: widget.movieTitle,
-                                      cinemaName: widget.cinemaName,
-                                      cinemaAddress: widget.cinemaAddress,
-                                      cinemaImage: widget.cinemaImage,
-                                      selectedSeats: selectedSeatsList,
-                                      showTime: availableTimes[selectedTimeIndex],
-                                      totalPrice: caculatePrice(),
-                                      showDate: selectedDate,
-                                      moviePoster: widget.moviePoster,
-                                      genres: widget.genres,
-                                      movieRuntime: widget.movieRuntime
-                                  ),
-                              transitionDuration: Duration.zero,
-                              reverseTransitionDuration: Duration.zero,
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return child;
-                              },
-                            ),
-                          );
-                        } else {
-                          DialogHelper.showCustomDialog(context, "Thông báo", "Vui lòng chọn ghế trước khi tiếp tục!");
-
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFCC434),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 28),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: const Text(
-                        'Buy Ticket',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -273,8 +364,8 @@ class _SelectSeatState extends State<SelectSeat> {
               color: isBooked
                   ? const Color(0xFF261D08)
                   : isSelected
-                  ? const Color(0xFFFCC434)
-                  : const Color(0xFF1C1C1C),
+                      ? const Color(0xFFFCC434)
+                      : const Color(0xFF1C1C1C),
               borderRadius: BorderRadius.circular(4.0),
             ),
             child: Center(
@@ -285,8 +376,8 @@ class _SelectSeatState extends State<SelectSeat> {
                   color: isBooked
                       ? const Color(0xFFFCC434)
                       : isSelected
-                      ? Colors.black
-                      : Colors.white,
+                          ? Colors.black
+                          : Colors.white,
                   fontSize: 12,
                 ),
               ),

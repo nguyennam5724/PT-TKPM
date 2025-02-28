@@ -1,5 +1,10 @@
 import 'dart:math';
 
+<<<<<<< HEAD
+=======
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+>>>>>>> deab196 (screen + db update)
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +29,7 @@ class Payment extends StatefulWidget {
 
   const Payment(
       {super.key,
+<<<<<<< HEAD
         required this.movieTitle,
         required this.cinemaName,
         required this.selectedSeats,
@@ -32,6 +38,16 @@ class Payment extends StatefulWidget {
         required this.totalPrice,
         required this.moviePoster,
         required this.genres, required this.cinemaAddress, required this.cinemaImage, required this.movieRuntime});
+=======
+      required this.movieTitle,
+      required this.cinemaName,
+      required this.selectedSeats,
+      required this.showTime,
+      required this.showDate,
+      required this.totalPrice,
+      required this.moviePoster,
+      required this.genres, required this.cinemaAddress, required this.cinemaImage, required this.movieRuntime});
+>>>>>>> deab196 (screen + db update)
 
   @override
   State<Payment> createState() => _PaymentState();
@@ -82,6 +98,7 @@ class _PaymentState extends State<Payment> {
   }
 
   Future<void> clearSharedPreferences() async {
+<<<<<<< HEAD
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     print("Đã xóa toàn bộ dữ liệu trong SharedPreferences");
@@ -138,6 +155,83 @@ class _PaymentState extends State<Payment> {
       print("Error saving payment info: $e");
     }
   }
+=======
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  print("Đã xóa toàn bộ dữ liệu trong SharedPreferences");
+}
+
+Future<void> saveBookedSeats(List<String> selectedSeats) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setStringList('bookedSeats', selectedSeats);
+  print("Booked seats saved successfully.");
+}
+
+Future<void> savePaymentInfoToFirebase({
+  required String movieTitle,
+  required String cinemaName,
+  required List<String> selectedSeats,
+  required int totalPrice,
+  required String showTime,
+  required DateTime showDate,
+}) async {
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print("Người dùng chưa đăng nhập!");
+      return;
+    }
+
+    // Sử dụng orderID đã tạo trong class thay vì tạo mới
+    String orderId = orderID;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('tickets')
+        .doc(orderId)
+        .set({
+      'orderID': orderId, // Thêm orderID để sử dụng trong TicketPage
+      'movieTitle': movieTitle,
+      'cinemaName': cinemaName,
+      'cinemaAddress': widget.cinemaAddress, // Thêm thông tin bổ sung
+      'cinemaImage': widget.cinemaImage,
+      'selectedSeats': selectedSeats,
+      'totalPrice': totalPrice,
+      'showTime': showTime,
+      'showDate': DateFormat('yyyy-MM-dd').format(showDate),
+      'moviePoster': widget.moviePoster,
+      'genres': widget.genres,
+      'movieRuntime': widget.movieRuntime,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    print("Vé đã được lưu vào Firebase với orderID: $orderId");
+
+    // Lưu ghế đã đặt vào SharedPreferences (nếu cần)
+    await saveBookedSeats(selectedSeats);
+
+    // Chuyển sang trang Ticket ngay sau khi lưu thành công
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const MainScreen(initialIndex: 1,),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  } catch (e) {
+    print("Lỗi khi lưu vé: $e");
+    DialogHelper.showCustomDialog(
+        context, "Lỗi", "Không thể lưu vé, vui lòng thử lại!");
+  }
+}
+
+
+
+
+>>>>>>> deab196 (screen + db update)
 
 
   @override
@@ -204,7 +298,11 @@ class _PaymentState extends State<Payment> {
       ),
       body: SingleChildScrollView(
         child: Padding(
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> deab196 (screen + db update)
           padding: const EdgeInsets.only(top: 8.0, right: 16, left: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,11 +447,16 @@ class _PaymentState extends State<Payment> {
                 height: 8,
               ),
               buildPaymentMethod(
+<<<<<<< HEAD
                   image: "assets/images/ATM.png",
+=======
+                  image: "assets/images/Visa.png",
+>>>>>>> deab196 (screen + db update)
                   content: "International payments"),
               const SizedBox(
                 height: 30,
               ),
+<<<<<<< HEAD
 //               ElevatedButton(
 //   onPressed: () async {
 //     await clearSharedPreferences(); // Gọi phương thức để xóa SharedPreferences
@@ -364,6 +467,8 @@ class _PaymentState extends State<Payment> {
 //   child: Text("Clear SharedPreferences"),
 // ),
 
+=======
+>>>>>>> deab196 (screen + db update)
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -377,6 +482,7 @@ class _PaymentState extends State<Payment> {
                             "Vui lòng chọn phương thức thanh toán trước khi tiếp tục!");
                       } else {
                         print(orderID);
+<<<<<<< HEAD
                         savePaymentInfo(
                             movieTitle: widget.movieTitle,
                             cinemaName: widget.cinemaName,
@@ -389,6 +495,15 @@ class _PaymentState extends State<Payment> {
                             orderID: orderID, cinemaAddress: widget.cinemaAddress,
                             cinemaImage: widget.cinemaImage,
                             movieRuntime: widget.movieRuntime
+=======
+                        savePaymentInfoToFirebase(
+                          movieTitle: widget.movieTitle,
+                          cinemaName: widget.cinemaName,
+                          totalPrice: widget.totalPrice - discount,
+                          selectedSeats: widget.selectedSeats,
+                          showTime: widget.showTime,
+                          showDate: widget.showDate,
+>>>>>>> deab196 (screen + db update)
                         );
 
                         Navigator.push(
@@ -396,7 +511,11 @@ class _PaymentState extends State<Payment> {
                           PageRouteBuilder(
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
+<<<<<<< HEAD
                             const MainScreen(initialIndex: 1,),
+=======
+                                    const MainScreen(initialIndex: 1,),
+>>>>>>> deab196 (screen + db update)
                             transitionDuration: Duration.zero,
                             reverseTransitionDuration: Duration.zero,
                           ),
@@ -506,7 +625,11 @@ class _PaymentState extends State<Payment> {
                     ),
                     const Text("•",
                         style:
+<<<<<<< HEAD
                         TextStyle(fontSize: 14, color: Color(0xFFE6E6E6))),
+=======
+                            TextStyle(fontSize: 14, color: Color(0xFFE6E6E6))),
+>>>>>>> deab196 (screen + db update)
                     const SizedBox(
                       width: 5,
                     ),
@@ -522,4 +645,8 @@ class _PaymentState extends State<Payment> {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> deab196 (screen + db update)
