@@ -24,7 +24,7 @@ class MainScreenState extends State<MainScreen> {
     _currentIndex = widget.initialIndex;
     _pages = [
       HomePage(onTabChange: _onTabChange),
-      const TicketPage(),
+      TicketPage(),
       MoviePage(selectedCategory: 'Now Playing'),
       const ProfilePage(),
     ];

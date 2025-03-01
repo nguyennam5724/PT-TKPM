@@ -1,31 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:moviego/controllers/ticket_controller.dart'; // Import Controller
 import 'package:moviego/screens/homepage.dart';
 import 'package:moviego/screens/ticket_detail.dart';
 
 class TicketPage extends StatelessWidget {
-  const TicketPage({super.key});
+  final TicketController _controller = TicketController(); // Khởi tạo Controller
 
-  Future<List<Map<String, dynamic>>> getTicketsFromFirebase() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      print("Người dùng chưa đăng nhập!");
-      return [];
-    }
-
-    QuerySnapshot ticketSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('tickets')
-        .orderBy('timestamp', descending: true) // Sắp xếp theo thời gian
-        .get();
-
-    return ticketSnapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
-  }
+  TicketPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +24,7 @@ class TicketPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getTicketsFromFirebase(),
+        future: _controller.getTicketsFromFirebase(), // Sử dụng Controller
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -67,16 +50,12 @@ class TicketPage extends StatelessWidget {
 
                 final movieTitle = ticket['movieTitle'] ?? 'Không có tiêu đề';
                 final cinemaName = ticket['cinemaName'] ?? 'Không có tên rạp';
-                final selectedSeats =
-                    (ticket['selectedSeats'] as List<dynamic>?)?.join(', ') ??
-                        'Không có ghế';
-                final showTime =
-                    ticket['showTime'] ?? 'Không có thời gian chiếu';
+                final selectedSeats = (ticket['selectedSeats'] as List<dynamic>?)?.join(', ') ?? 'Không có ghế';
+                final showTime = ticket['showTime'] ?? 'Không có thời gian chiếu';
                 final showDate = ticket['showDate'] ?? 'Không có ngày chiếu';
                 final totalPrice = ticket['totalPrice']?.toString() ?? '0';
                 final moviePoster = ticket['moviePoster'] ?? '';
-                final genres =
-                    (ticket['genres'] as List<dynamic>?)?.cast<String>() ?? [];
+                final genres = (ticket['genres'] as List<dynamic>?)?.cast<String>() ?? [];
 
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -85,15 +64,10 @@ class TicketPage extends StatelessWidget {
                       padding: const EdgeInsets.all(0),
                       child: GestureDetector(
                         onTap: () {
-                          // Chuyển Map<String, dynamic> -> Map<String, String>
-                          Map<String, String> ticketDetails =
-                              ticket.map((key, value) {
+                          Map<String, String> ticketDetails = ticket.map((key, value) {
                             if (value is List) {
-                              return MapEntry(
-                                  key,
-                                  value.join(
-                                      ', ')); // 🔥 Chuyển List thành chuỗi
-                            }  else {
+                              return MapEntry(key, value.join(', '));
+                            } else {
                               return MapEntry(key, value.toString());
                             }
                           });
@@ -101,9 +75,7 @@ class TicketPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                  TicketDetail(ticketDetails: ticketDetails),
+                              pageBuilder: (context, animation, secondaryAnimation) => TicketDetail(ticketDetails: ticketDetails),
                               transitionDuration: Duration.zero,
                               reverseTransitionDuration: Duration.zero,
                             ),
@@ -150,16 +122,12 @@ class TicketPage extends StatelessWidget {
                                   const SizedBox(height: 18),
                                   Row(
                                     children: [
-                                      const Text("🎬",
-                                          style: TextStyle(fontSize: 10)),
+                                      const Text("🎬", style: TextStyle(fontSize: 10)),
                                       const SizedBox(width: 5),
                                       Expanded(
                                         child: Text(
                                           genres.join(', '),
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xFFE6E6E6),
-                                              overflow: TextOverflow.ellipsis),
+                                          style: const TextStyle(fontSize: 12, color: Color(0xFFE6E6E6), overflow: TextOverflow.ellipsis),
                                           maxLines: 1,
                                         ),
                                       ),
@@ -168,28 +136,22 @@ class TicketPage extends StatelessWidget {
                                   const SizedBox(height: 3),
                                   Row(
                                     children: [
-                                      const Text("🍿",
-                                          style: TextStyle(fontSize: 10)),
+                                      const Text("🍿", style: TextStyle(fontSize: 10)),
                                       const SizedBox(width: 5),
                                       Text(
                                         cinemaName,
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFFE6E6E6)),
+                                        style: const TextStyle(fontSize: 12, color: Color(0xFFE6E6E6)),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 3),
                                   Row(
                                     children: [
-                                      const Text("💸",
-                                          style: TextStyle(fontSize: 10)),
+                                      const Text("💸", style: TextStyle(fontSize: 10)),
                                       const SizedBox(width: 5),
                                       Text(
                                         "${NumberFormat('#,###', 'vi_VN').format(int.parse(totalPrice))} VND",
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
